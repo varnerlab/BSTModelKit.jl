@@ -1,6 +1,19 @@
-# BSTModelKit.jl
-A Julia package for building, and running Biochemical Systems Theory (BST) models
 
+## Introduction
+`BSTModelKit.jl` is a package for constructing, solving and analyzing Biochemical Systems Theory (BST) models of biohemical networks written in the in the [Julia](https://julialang.org) programming language. 
+
+## Installation and Requirements
+`BSTModelKit.jl` can be installed, updated, or removed using the [Julia package management system](https://docs.julialang.org/en/v1/stdlib/Pkg/). To access the package management interface, open the [Julia REPL](https://docs.julialang.org/en/v1/stdlib/REPL/), and start the package mode by pressing `]`.
+While in package mode, to install `PQPolygonSDK.jl`, issue the command:
+
+    (@v1.8.x) pkg> add BSTModelKit
+
+To use `BSTModelKit.jl` in your projects, issue the command:
+
+    julia> using BSTModelKit
+
+## Documentation
+Documentation for the `BSTModelKit.jl` package can be found [here](https://varnerlab.github.io/BSTModelKitDocumentation/landing.html).
 
 ### Funding
 The work described here was supported by following grants: The Interaction of Basal Risk, Pharmacological Ovulation Induction, Pregnancy and Delivery on Hemostatic Balance  NIH NHLBI R-33 HL 141787 (PI’s [Bernstein](https://www.uvmhealth.org/medcenter/provider/ira-m-bernstein-md) , [Orfeo](https://www.med.uvm.edu/biochemistry/lab_orfeo_research)) and the Pregnancy Phenotype and Predisposition to Preeclampsia NIH NHLBI R01 HL 71944 (PI [Bernstein](https://www.uvmhealth.org/medcenter/provider/ira-m-bernstein-md)).
