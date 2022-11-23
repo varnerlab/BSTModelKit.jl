@@ -1,0 +1,4 @@
+name = "BSTModelKit"
+uuid = "6cdf8678-8cf1-421e-91a2-79adcb74f780"
+authors = ["Jeffrey Varner <jdv27@cornell.edu>"]
+version = "0.1.0"
