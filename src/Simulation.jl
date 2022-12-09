@@ -1,18 +1,19 @@
 
 ## ===== PRIVATE METHODS BELOW HERE ============================================================= ##
 function _evaluate(model::Dict{String,Any}; 
-    tspan::Tuple{Float64,Float64} = (0.0,20.0), Δt::Float64 = 0.01)
+    tspan::Tuple{Float64,Float64} = (0.0,20.0), Δt::Float64 = 0.01, input::Union{Nothing,Function} = nothing)
 
     # get stuff from model -
     xₒ = model["initial_condition_array"]
 
     # build parameter vector -
-    p = Array{Any,1}(undef,5)
+    p = Array{Any,1}(undef,6)
     p[1] = model["α"]
     p[2] = model["G"]
     p[3] = model["S"]
     p[4] = model["number_of_dynamic_states"]
     p[5] = model["static_factors_array"]
+    p[6] = input;
 
     # setup the solver -
     prob = ODEProblem(_balances, xₒ, tspan, p; saveat = Δt)
@@ -40,12 +41,13 @@ end
 ## ===== PRIVATE METHODS ABOVE HERE ============================================================= ##
 
 ## ===== PUBLIC METHODS BELOW HERE ============================================================== ##
-function evaluate(model::BSTModel; tspan::Tuple{Float64,Float64} = (0.0,20.0), Δt::Float64 = 0.01)::Tuple{Array{Float64,1}, Array{Float64,2}}
+function evaluate(model::BSTModel; tspan::Tuple{Float64,Float64} = (0.0,20.0), Δt::Float64 = 0.01, 
+    input::Union{Nothing,Function} = nothing)::Tuple{Array{Float64,1}, Array{Float64,2}}
 
     try
         # convert the model object to the internal_model_dictionary -
         internal_model_dictionary = _build(model);
-        return _evaluate(internal_model_dictionary, tspan = tspan, Δt = Δt); 
+        return _evaluate(internal_model_dictionary, tspan = tspan, Δt = Δt, input = input); 
 
     catch error
         
