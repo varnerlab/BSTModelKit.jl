@@ -38,3 +38,7 @@ r3::{X3,E3}
 r4::{X4}
 r5::{X3}
 #rate::end
+
+#pragma::stoichiometry
+r1,X1,2.0
+#stoichiometry::end
