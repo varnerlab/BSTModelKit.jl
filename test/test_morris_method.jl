@@ -37,7 +37,7 @@ model_object.initial_condition_array = icv;
 model_object.static_factors_array = [0.1, 0.1, 0.1];
 
 # set the values for the α -
-ialpha = [10.0, 10.0, 10.0, 10.0, 0.01, 0.01];
+ialpha = [1.0, 1.0, 1.0, 1.0, 0.01, 0.01];
 model_object.α = ialpha;
 
 # setup bounds -
@@ -49,7 +49,7 @@ for pᵢ ∈ 1:(NP - 1)
     L[pᵢ] = 0.1*ialpha[pᵢ]
     U[pᵢ] = 10.0*ialpha[pᵢ]
 end
-L[end] = -10.0
+L[end] = -3.0
 U[end] = 0.0;
 
 # setup performance 
