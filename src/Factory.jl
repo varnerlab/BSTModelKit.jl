@@ -225,9 +225,6 @@ function _extract_model_section(file_buffer_array::Array{String,1},
     return section_buffer
 end
 
-function _build_default_model_dictionary_toml()::Dict{String, Any}
-end
-
 function _build_default_model_dictionary(model_buffer::Array{String,1})::Dict{String,Any}
 
     # initialize -
@@ -306,6 +303,7 @@ function _build_default_model_dictionary(model_buffer::Array{String,1})::Dict{St
     model_dict["total_species_list"] = total_species_list
     model_dict["static_factors_array"] = static_factors_array
     model_dict["initial_condition_array"] = zeros(number_of_dynamic_states)
+    model_dict["list_of_reactions"] = tmp_rate_order_array;
     model_dict["S"] = S
     model_dict["G"] = G
     model_dict["α"] = α
@@ -421,6 +419,7 @@ function _build_default_model_dictionary_toml(path_to_file::String)::Dict{String
     model_dict["total_species_list"] = total_species_list
     model_dict["static_factors_array"] = static_factors_array
     model_dict["initial_condition_array"] = zeros(number_of_dynamic_states)
+    model_dict["list_of_reactions"] = tmp_rate_order_array;
     model_dict["S"] = S
     model_dict["G"] = G
     model_dict["α"] = α
@@ -450,6 +449,7 @@ function _build(internal::Dict{String,Any})::BSTModel
     model.list_of_static_species = internal["list_of_static_fators"] 
     model.total_species_list = internal["total_species_list"]
     model.static_factors_array = internal["static_factors_array"]
+    model.list_of_reactions = internal["list_of_reactions"]
     model.initial_condition_array = zeros(number_of_dynamic_states);
     model.S = internal["S"]
     model.G = internal["G"]
@@ -483,6 +483,7 @@ function _build(model::BSTModel)::Dict{String,Any}
     internal_model_dictionary["total_species_list"] = model.total_species_list
     internal_model_dictionary["static_factors_array"] = model.static_factors_array
     internal_model_dictionary["initial_condition_array"] = model.initial_condition_array
+    internal_model_dictionary["list_of_reactions"] = model.list_of_reactions
     internal_model_dictionary["S"] = model.S
     internal_model_dictionary["G"] = model.G
     internal_model_dictionary["α"] = model.α

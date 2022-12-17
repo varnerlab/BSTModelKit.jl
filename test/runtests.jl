@@ -27,7 +27,7 @@ end
     @test default_bstmodelkit_test() == true
     @test test_build_bst_model_object() == true
     @test test_build_toml_model_object() == true
-    @test test_load_jld2_model_object() == true
     @test test_save_jld2_model_object() == true
+    @test test_load_jld2_model_object() == true
     @test test_build_run_feedback_model() == true
 end
