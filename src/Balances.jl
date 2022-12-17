@@ -6,7 +6,7 @@ function _balances(dx, x, p, t)
     S = p[3]                            # stoichoimetric array
     number_of_dynamic_states = p[4]     # number of dynamic states
     static_factors_array = p[5]         # list of static factors 
-    u = p[6]
+    u = p[6]                            # get the input function
 
     # check: do we have a callback function?
     if (u === nothing)
