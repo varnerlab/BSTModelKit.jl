@@ -1,0 +1,44 @@
+list_of_static_species = ["E1", "E2", "E3"]
+list_of_dynamic_species = ["X1", "X2", "X3", "X4", "X5"]
+list_of_connection_records = [
+
+    # name::{reactants} --> {products}
+    # 1. name: reaction name (used in rate section)
+    # 2. {reactants}: list of dynamic species acting as a reactants
+    # 3. {products}: list of dynamic species acting as a reactants
+
+    # reactions in the pathway -
+    "r1::{X1} --> X2",
+    "r2::{X2} --> X3",
+    "r3::X3 --> X4",
+    "r5::X3 --> X5",
+
+    # reactions at the ends -
+    "r0::{} --> X1",
+    "r4::X4 --> {}"
+]
+
+list_of_kinetics_records = [
+    
+    # name::{factor_1,factor_2,....}
+    # 1: name = reaction name (must be in the #pragma::structure section)
+    # 2: list of factor symbols (can be both static and dynamic, order does not matter)
+    # 3: the order of the records does not matter here, we establish the order from the structure section
+    "r0::{}", 
+    "r1::{X1,X4,E1}",
+    "r2::{X2,E2}",
+    "r3::{X3,E3}",
+    "r4::{X4}",
+    "r5::{X3}"
+]
+
+list_of_stoichiometry_records = [
+    
+    # Simple record
+    # name,factor,coeff
+    "r1,X1,2.0"
+
+    # Advanced record 
+    # name,{factor_1, factor_2,...},{coeff}
+    # not implemented yet
+]

@@ -225,6 +225,9 @@ function _extract_model_section(file_buffer_array::Array{String,1},
     return section_buffer
 end
 
+function _build_default_model_dictionary_toml()::Dict{String, Any}
+end
+
 function _build_default_model_dictionary(model_buffer::Array{String,1})::Dict{String,Any}
 
     # initialize -
@@ -340,6 +343,96 @@ function _read_model_file(path_to_file::String)::Array{String,1}
     return model_buffer
 end
 
+function _build_default_model_dictionary_toml(path_to_file::String)::Dict{String,Any}
+
+    # try to parse the toml file -
+    toml_model = TOML.tryparsefile(path_to_file);
+    
+    # initialize -
+    model_dict = Dict{String, Any}();
+    tmp_rate_order_array = Array{String,1}()
+
+    # get list of dynamic species -
+    list_of_dynamic_species = toml_model["list_of_dynamic_species"]
+    number_of_dynamic_states = length(list_of_dynamic_species)
+ 
+    # get list of static species -
+    list_of_static_species = toml_model["list_of_static_species"]
+    number_of_static_states = length(list_of_static_species)
+    static_factors_array = zeros(number_of_static_states)
+ 
+    # total species list -
+    total_species_list = vcat(list_of_dynamic_species, list_of_static_species)
+ 
+    # build the stoichiometric (connectivity) array -
+    structure_section = toml_model["list_of_connection_records"]
+    structure_dict_array = _parse_structure_section(structure_section)
+    S = _build_stoichiometric_matrix(list_of_dynamic_species, structure_dict_array)
+ 
+    # build the rate order array -
+    for record ∈ structure_dict_array
+        name = record["name"];
+        push!(tmp_rate_order_array, name);
+    end
+ 
+    # build list of stoichiometry records -
+    stoichiometry_section = toml_model["list_of_stoichiometry_records"];
+    list_of_stoichiometry_records = _parse_stoichiometry_section(stoichiometry_section);
+
+    @show list_of_stoichiometry_records, tmp_rate_order_array, list_of_dynamic_species
+
+    for (key, value) ∈ list_of_stoichiometry_records
+         
+        reaction_name = key[1]; # reaction name
+        species_name = key[2]; # species name 
+
+
+
+        # look indexs -
+        index_reaction_name = findfirst(x->x==reaction_name, tmp_rate_order_array);
+        index_species_name = findfirst(x->x==species_name, list_of_dynamic_species);
+ 
+        # patch -
+        old_value = S[index_species_name, index_reaction_name];
+        S[index_species_name, index_reaction_name] = old_value*value;
+    end
+ 
+    # build and sort the rate dict array -
+    rate_section = toml_model["list_of_kinetics_records"]
+    rate_dict_array = _parse_rate_section(rate_section)
+    sorted_rate_dict_array = Array{Dict{String,Any},1}(undef, length(rate_dict_array))
+    for rate_dictionary ∈ rate_dict_array
+ 
+        # get the name -
+        name = rate_dictionary["name"];
+ 
+        # what key is this name?
+        idx_name_key = findall(x->x==name, tmp_rate_order_array)
+        sorted_rate_dict_array[first(idx_name_key)] = rate_dictionary;
+    end
+ 
+    # build rate exponent array -
+    G = _build_exponent_matrix(total_species_list, sorted_rate_dict_array)
+ 
+    # build the rate constant array -
+    α = ones(length(rate_dict_array))
+ 
+    # populate -
+    model_dict["number_of_dynamic_states"] = number_of_dynamic_states
+    model_dict["number_of_static_states"] = number_of_static_states
+    model_dict["list_of_dynamic_species"] = list_of_dynamic_species
+    model_dict["list_of_static_fators"] = list_of_static_species
+    model_dict["total_species_list"] = total_species_list
+    model_dict["static_factors_array"] = static_factors_array
+    model_dict["initial_condition_array"] = zeros(number_of_dynamic_states)
+    model_dict["S"] = S
+    model_dict["G"] = G
+    model_dict["α"] = α
+
+    # return -
+    return model_dict
+end
+
 function _build(internal::Dict{String,Any})::BSTModel
 
     # create new BSTModel -
@@ -397,6 +490,7 @@ function build(path::String)::BSTModel
     push!(approved_file_extenstions_set,".jld2");
     push!(approved_file_extenstions_set,".dat");
     push!(approved_file_extenstions_set,".net");
+    push!(approved_file_extenstions_set,".toml");
 
     try
 
@@ -412,8 +506,11 @@ function build(path::String)::BSTModel
         if (extension == ".jld2")
             internal_model_dictionary = load(path)["model"];
             return _build(internal_model_dictionary);
+        elseif (extension == ".toml")
+
+            # build the model -
+            return _build(_build_default_model_dictionary_toml(path));
         else
-            
             # load the reaction file -
             model_buffer = _read_model_file(path)
 

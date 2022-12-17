@@ -5,6 +5,7 @@ _PATH_TO_SRC = dirname(pathof(@__MODULE__))
 using DifferentialEquations
 using JLD2
 using FileIO
+using TOML
 
 # load my codes -
 include(joinpath(_PATH_TO_SRC, "Types.jl"))
