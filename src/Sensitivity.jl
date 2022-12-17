@@ -5,7 +5,7 @@ function morris(peformance::Function, L::Array{Float64,1}, U::Array{Float64,1};
     NP = length(L);
 
     # call -
-    m = gsa(peformance, Morris(num_trajectory=number_of_samples), [[L[i],U[i]] for i in 1:(NP-1)]);
+    m = gsa(peformance, Morris(num_trajectory=number_of_samples), [[L[i],U[i]] for i in 1:NP]);
 
     # return -
     return m;
