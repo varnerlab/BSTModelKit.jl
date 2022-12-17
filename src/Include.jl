@@ -3,6 +3,7 @@ _PATH_TO_SRC = dirname(pathof(@__MODULE__))
 
 # load external packages that are required -
 using DifferentialEquations
+using GlobalSensitivity
 using JLD2
 using FileIO
 using TOML
