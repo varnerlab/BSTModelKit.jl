@@ -109,6 +109,43 @@ function _parse_rate_section(buffer::Array{String,1})::Array{Dict{String,Any}}
     return record_array
 end
 
+function _parse_stoichiometry_section(buffer::Array{String,1})::Dict{Tuple{String, String}, Float64}
+
+    # initialize -
+    records_dictionary = Dict{Tuple{String, String}, Float64}();
+
+    # main -
+    for record ∈ buffer
+        
+        # 
+
+        # check: what kind of record is this?
+        if (occursin("{", record) == true || occursin("}", record) == true)
+            
+            # sometype of group record -
+            # ....
+
+        else
+
+            # old school record
+            # rxn, species, coeff
+            
+            # split around the ","
+            record_components = split(record, ",")
+            reaction_name = record_components[1];
+            species_name = record_components[2];
+            coeff_value = record_components[3];
+
+            # build the key, and then store in dict -
+            key_tuple = (reaction_name, species_name);
+            records_dictionary[key_tuple] = parse(Float64, coeff_value);
+        end
+    end
+
+    # return -
+    return records_dictionary;
+end
+
 function _build_stoichiometric_matrix(list_of_dynamic_species::Array{String,1},
     reactions::Array{Dict{String,Any}})::Array{Float64,2}
 
@@ -195,10 +232,11 @@ function _build_default_model_dictionary(model_buffer::Array{String,1})::Dict{St
     tmp_rate_order_array = Array{String,1}()
 
     # get the sections of the model file -
-    dynamic_section = _extract_model_section(model_buffer, "#pragma::dynamic", "#dynamic::end")
-    static_section = _extract_model_section(model_buffer, "#pragma::static", "#static::end")
-    structure_section = _extract_model_section(model_buffer, "#pragma::structure", "#structure::end")
-    rate_section = _extract_model_section(model_buffer, "#pragma::rate", "#rate::end")
+    dynamic_section = _extract_model_section(model_buffer, "#dynamic::start", "#dynamic::end")
+    static_section = _extract_model_section(model_buffer, "#static::start", "#static::end")
+    structure_section = _extract_model_section(model_buffer, "#structure::start", "#structure::end")
+    rate_section = _extract_model_section(model_buffer, "#rate::start", "#rate::end")
+    stoichiometry_section = _extract_model_section(model_buffer, "#stoichiometry::start", "#stoichiometry::end")
 
     # get list of dynamic species -
     list_of_dynamic_species = _parse_species_record(dynamic_section)
@@ -220,6 +258,22 @@ function _build_default_model_dictionary(model_buffer::Array{String,1})::Dict{St
     for record ∈ structure_dict_array
         name = record["name"];
         push!(tmp_rate_order_array, name);
+    end
+
+    # build list of stoichiometry records -
+    list_of_stoichiometry_records = _parse_stoichiometry_section(stoichiometry_section);
+    for (key, value) ∈ list_of_stoichiometry_records
+        
+        reaction_name = key[1]; # reaction name
+        species_name = key[2]; # species name 
+
+        # look indexs -
+        index_reaction_name = findfirst(x->x==reaction_name, tmp_rate_order_array);
+        index_species_name = findfirst(x->x==species_name, list_of_dynamic_species);
+
+        # patch -
+        old_value = S[index_species_name, index_reaction_name];
+        S[index_species_name, index_reaction_name] = old_value*value;
     end
 
     # build and sort the rate dict array -
