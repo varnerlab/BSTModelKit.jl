@@ -10,5 +10,6 @@ module BSTModelKit
     export build
     export save
     export evaluate
+    export morris
 
 end # module BSTModelKit
