@@ -16,6 +16,11 @@ mutable struct BSTModel <: AbstractBSTModel
     G::Array{Float64,2}
     α::Array{Float64,1}
 
+    # metadata -
+    author::String
+    version::String
+    date::String
+    description::String
 
     # constructor -
     BSTModel() = new()

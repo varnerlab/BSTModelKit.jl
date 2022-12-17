@@ -1,3 +1,10 @@
+[metadata]
+author = "jdv27@cornell.edu"
+date = "12/17/22"
+version  = "0.1"
+description = "Test model for the BST model package"
+
+[model]
 list_of_static_species = ["E1", "E2", "E3"]
 list_of_dynamic_species = ["X1", "X2", "X3", "X4", "X5"]
 list_of_connection_records = [

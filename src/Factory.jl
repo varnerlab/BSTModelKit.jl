@@ -353,11 +353,11 @@ function _build_default_model_dictionary_toml(path_to_file::String)::Dict{String
     tmp_rate_order_array = Array{String,1}()
 
     # get list of dynamic species -
-    list_of_dynamic_species = toml_model["list_of_dynamic_species"]
+    list_of_dynamic_species = toml_model["model"]["list_of_dynamic_species"]
     number_of_dynamic_states = length(list_of_dynamic_species)
  
     # get list of static species -
-    list_of_static_species = toml_model["list_of_static_species"]
+    list_of_static_species = toml_model["model"]["list_of_static_species"]
     number_of_static_states = length(list_of_static_species)
     static_factors_array = zeros(number_of_static_states)
  
@@ -365,7 +365,7 @@ function _build_default_model_dictionary_toml(path_to_file::String)::Dict{String
     total_species_list = vcat(list_of_dynamic_species, list_of_static_species)
  
     # build the stoichiometric (connectivity) array -
-    structure_section = toml_model["list_of_connection_records"]
+    structure_section = toml_model["model"]["list_of_connection_records"]
     structure_dict_array = _parse_structure_section(structure_section)
     S = _build_stoichiometric_matrix(list_of_dynamic_species, structure_dict_array)
  
@@ -376,15 +376,13 @@ function _build_default_model_dictionary_toml(path_to_file::String)::Dict{String
     end
  
     # build list of stoichiometry records -
-    stoichiometry_section = toml_model["list_of_stoichiometry_records"];
+    stoichiometry_section = toml_model["model"]["list_of_stoichiometry_records"];
     list_of_stoichiometry_records = _parse_stoichiometry_section(stoichiometry_section);
 
     for (key, value) ∈ list_of_stoichiometry_records
          
         reaction_name = key[1]; # reaction name
         species_name = key[2]; # species name 
-
-
 
         # look indexs -
         index_reaction_name = findfirst(x->x==reaction_name, tmp_rate_order_array);
@@ -396,7 +394,7 @@ function _build_default_model_dictionary_toml(path_to_file::String)::Dict{String
     end
  
     # build and sort the rate dict array -
-    rate_section = toml_model["list_of_kinetics_records"]
+    rate_section = toml_model["model"]["list_of_kinetics_records"]
     rate_dict_array = _parse_rate_section(rate_section)
     sorted_rate_dict_array = Array{Dict{String,Any},1}(undef, length(rate_dict_array))
     for rate_dictionary ∈ rate_dict_array
@@ -427,6 +425,12 @@ function _build_default_model_dictionary_toml(path_to_file::String)::Dict{String
     model_dict["G"] = G
     model_dict["α"] = α
 
+    # add meta stuff to dictionary -
+    model_dict["author"] = toml_model["metadata"]["author"]
+    model_dict["date"] = toml_model["metadata"]["date"]
+    model_dict["version"] = toml_model["metadata"]["version"]
+    model_dict["description"] = toml_model["metadata"]["description"]
+
     # return -
     return model_dict
 end
@@ -450,6 +454,17 @@ function _build(internal::Dict{String,Any})::BSTModel
     model.S = internal["S"]
     model.G = internal["G"]
     model.α = internal["α"]
+
+    # do we have metadata?
+    metadata_keys = ["author", "version", "date", "description"]
+    for key in metadata_keys
+
+        if (haskey(internal, key))
+            setproperty!(model, Symbol(key), internal[key])
+        else
+            setproperty!(model, Symbol(key), "");
+        end
+    end
 
     # return -
     return model;
