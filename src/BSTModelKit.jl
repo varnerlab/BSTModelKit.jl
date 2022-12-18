@@ -11,5 +11,6 @@ module BSTModelKit
     export save
     export evaluate
     export morris
+    export sobol
 
 end # module BSTModelKit
