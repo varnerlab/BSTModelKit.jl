@@ -55,5 +55,5 @@ U[end] = 0.0;
 # setup performance 
 F(κ) = performance(κ, model_object);
 
-m = sobol(F, L, U; number_of_samples = 20000);
+m = sobol(F, L, U; number_of_samples = 50000);
 
