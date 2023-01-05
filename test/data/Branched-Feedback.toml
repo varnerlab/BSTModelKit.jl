@@ -1,0 +1,45 @@
+[metadata]
+author = "jdv27@cornell.edu"
+date = "12/17/22"
+version  = "0.1"
+description = "Test model for the BST model package"
+
+[model]
+list_of_static_species = ["E1", "E2", "E3", "E4"]
+list_of_dynamic_species = ["A", "B", "C", "D", "E"]
+list_of_connection_records = [
+
+    # name::{reactants} --> {products}
+    # 1. name: reaction name (used in rate section)
+    # 2. {reactants}: list of dynamic species acting as a reactants
+    # 3. {products}: list of dynamic species acting as a reactants
+
+    # reactions in the pathway -
+    "r1::A --> B",
+    "r2::B --> C",
+    "r3::C --> D",
+    "r4::C --> E",
+
+    # reactions at the ends -
+    "r0::{} --> A",
+    "r5::D --> {}",
+    "r6::E --> {}"
+]
+
+list_of_kinetics_records = [
+    
+    # name::{factor_1,factor_2,....}
+    # 1: name = reaction name (must be in the #pragma::structure section)
+    # 2: list of factor symbols (can be both static and dynamic, order does not matter)
+    # 3: the order of the records does not matter here, we establish the order from the structure section
+    "r0::{}", 
+    "r1::{A,E,E1}",
+    "r2::{B,D,E2}",
+    "r3::{C,E3}",
+    "r4::{C,E4}",
+    "r5::{D}",
+    "r6::{E}"
+]
+
+list_of_stoichiometry_records = [
+]

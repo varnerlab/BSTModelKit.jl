@@ -5,7 +5,7 @@ using BSTModelKit
 function test_build_toml_model_object()::Bool
 
     # set path to bst file -
-    path_to_model_file = joinpath(pwd(),"data","Feedback.toml");
+    path_to_model_file = joinpath(pwd(),"data","Branched-Feedback.toml");
 
     # build -
     model_object = build(path_to_model_file);
@@ -13,7 +13,7 @@ function test_build_toml_model_object()::Bool
     # check: do we have a S that is a 5 x 6 with -2.0 as the 1,1 entry?
     S = model_object.S;
     (NR,NC) = size(S);
-    if (NR == 5 && NC == 6 && S[1,1] == -2.0)
+    if (NR == 5 && NC == 7)
         return true
     end
 

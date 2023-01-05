@@ -196,7 +196,7 @@ function _build_exponent_matrix(list_of_factors::Array{String,1},
 end
 
 function _extract_model_section(file_buffer_array::Array{String,1},
-    start_section_marker::String, end_section_marker::String)::Array{String,1}
+    start_section_marker::String, end_section_marker::String)
 
     # initialize -
     section_buffer = String[]
@@ -205,8 +205,6 @@ function _extract_model_section(file_buffer_array::Array{String,1},
     section_line_start = 1
     section_line_end = 1
     for (index, line) in enumerate(file_buffer_array)
-
-        
 
         if (occursin(start_section_marker, line) == true)
             section_line_start = index
@@ -220,6 +218,9 @@ function _extract_model_section(file_buffer_array::Array{String,1},
         push!(section_buffer, line_item)
     end
 
+    if (isempty(section_buffer) == true)
+        return nothing
+    end
 
     # return -
     return section_buffer
@@ -260,20 +261,24 @@ function _build_default_model_dictionary(model_buffer::Array{String,1})::Dict{St
         push!(tmp_rate_order_array, name);
     end
 
-    # build list of stoichiometry records -
-    list_of_stoichiometry_records = _parse_stoichiometry_section(stoichiometry_section);
-    for (key, value) ∈ list_of_stoichiometry_records
-        
-        reaction_name = key[1]; # reaction name
-        species_name = key[2]; # species name 
+    # check: if the stoichiometry_section is empty, then we can skip this code -
+    if (stoichiometry_section !== nothing)
+    
+        # build list of stoichiometry records -
+        list_of_stoichiometry_records = _parse_stoichiometry_section(stoichiometry_section);
+        for (key, value) ∈ list_of_stoichiometry_records
+            
+            reaction_name = key[1]; # reaction name
+            species_name = key[2]; # species name 
 
-        # look indexs -
-        index_reaction_name = findfirst(x->x==reaction_name, tmp_rate_order_array);
-        index_species_name = findfirst(x->x==species_name, list_of_dynamic_species);
+            # look indexs -
+            index_reaction_name = findfirst(x->x==reaction_name, tmp_rate_order_array);
+            index_species_name = findfirst(x->x==species_name, list_of_dynamic_species);
 
-        # patch -
-        old_value = S[index_species_name, index_reaction_name];
-        S[index_species_name, index_reaction_name] = old_value*value;
+            # patch -
+            old_value = S[index_species_name, index_reaction_name];
+            S[index_species_name, index_reaction_name] = old_value*value;
+        end
     end
 
     # build and sort the rate dict array -
@@ -374,21 +379,25 @@ function _build_default_model_dictionary_toml(path_to_file::String)::Dict{String
     end
  
     # build list of stoichiometry records -
-    stoichiometry_section = toml_model["model"]["list_of_stoichiometry_records"];
-    list_of_stoichiometry_records = _parse_stoichiometry_section(stoichiometry_section);
+    if (haskey(toml_model["model"],"list_of_stoichiometry_records") == true)
+        stoichiometry_section = toml_model["model"]["list_of_stoichiometry_records"];
+        if (length(stoichiometry_section) != 0)
+            list_of_stoichiometry_records = _parse_stoichiometry_section(stoichiometry_section);
 
-    for (key, value) ∈ list_of_stoichiometry_records
-         
-        reaction_name = key[1]; # reaction name
-        species_name = key[2]; # species name 
+            for (key, value) ∈ list_of_stoichiometry_records
+                
+                reaction_name = key[1]; # reaction name
+                species_name = key[2]; # species name 
 
-        # look indexs -
-        index_reaction_name = findfirst(x->x==reaction_name, tmp_rate_order_array);
-        index_species_name = findfirst(x->x==species_name, list_of_dynamic_species);
- 
-        # patch -
-        old_value = S[index_species_name, index_reaction_name];
-        S[index_species_name, index_reaction_name] = old_value*value;
+                # look indexs -
+                index_reaction_name = findfirst(x->x==reaction_name, tmp_rate_order_array);
+                index_species_name = findfirst(x->x==species_name, list_of_dynamic_species);
+        
+                # patch -
+                old_value = S[index_species_name, index_reaction_name];
+                S[index_species_name, index_reaction_name] = old_value*value;
+            end
+        end
     end
  
     # build and sort the rate dict array -

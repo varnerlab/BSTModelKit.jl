@@ -12,5 +12,6 @@ module BSTModelKit
     export evaluate
     export morris
     export sobol
+    export steadystate
 
 end # module BSTModelKit

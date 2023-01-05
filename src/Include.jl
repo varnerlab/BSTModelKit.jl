@@ -8,6 +8,7 @@ using QuasiMonteCarlo
 using JLD2
 using FileIO
 using TOML
+using NonlinearSolve
 
 # load my codes -
 include(joinpath(_PATH_TO_SRC, "Types.jl"))
