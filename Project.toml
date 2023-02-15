@@ -1,7 +1,7 @@
 name = "BSTModelKit"
 uuid = "6cdf8678-8cf1-421e-91a2-79adcb74f780"
 authors = ["Jeffrey Varner <jdv27@cornell.edu>"]
-version = "0.1.1"
+version = "0.1.2"
 
 [deps]
 DifferentialEquations = "0c46a032-eb83-5123-abaf-570d42b7fbaa"

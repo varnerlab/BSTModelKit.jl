@@ -39,37 +39,40 @@ function _parse_structure_section(buffer::Array{String,1})::Array{Dict{String,An
         # split around the :: 
         record_components = String.(split(line, "::"))
         
-        # First component is the name -
-        name = record_components[1]
+        if (length(record_components) > 1)
+            
+            # First component is the name -
+            name = record_components[1]
 
-        # the second component is a structure like {x} --> {y}
-        original_structure_phrase = record_components[2]
-        original_structure_phrase = replace(original_structure_phrase, "{" => "", "}" => "")
+            # the second component is a structure like {x} --> {y}
+            original_structure_phrase = record_components[2]
+            original_structure_phrase = replace(original_structure_phrase, "{" => "", "}" => "")
 
-        # split around the --> symbol
-        left_phrase = rstrip.(lstrip.(String.(split(original_structure_phrase,"-->"))))[1]
-        right_phrase = rstrip.(lstrip.(String.(split(original_structure_phrase,"-->"))))[2]
+            # split around the --> symbol
+            left_phrase = rstrip.(lstrip.(String.(split(original_structure_phrase,"-->"))))[1]
+            right_phrase = rstrip.(lstrip.(String.(split(original_structure_phrase,"-->"))))[2]
 
-        # now, we can have a , in the left or right record, run the spit one more time for a ,
-        left_phase_species_list = split(left_phrase,",")
-        right_phase_species_list = split(right_phrase,",")
+            # now, we can have a , in the left or right record, run the spit one more time for a ,
+            left_phase_species_list = split(left_phrase,",")
+            right_phase_species_list = split(right_phrase,",")
 
-        # add -
-        tmp_dict = Dict{String,Any}()
-        tmp_dict["name"] = name
+            # add -
+            tmp_dict = Dict{String,Any}()
+            tmp_dict["name"] = name
 
-        # process reactants -
-        for factor ∈ left_phase_species_list
-            tmp_dict[factor] = -1.0
+            # process reactants -
+            for factor ∈ left_phase_species_list
+                tmp_dict[factor] = -1.0
+            end
+            
+            # process products -
+            for prod ∈ right_phase_species_list
+                tmp_dict[prod] = 1.0
+            end
+
+            # store -
+            push!(record_array, tmp_dict)
         end
-        
-        # process products -
-        for prod ∈ right_phase_species_list
-            tmp_dict[prod] = 1.0
-        end
-
-        # store -
-        push!(record_array, tmp_dict)
     end
 
     # return -
