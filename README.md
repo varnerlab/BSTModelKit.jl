@@ -13,7 +13,7 @@ The S-system BST representation was developed by [Savageau, Voit, and coworkers]
 * [Savageau M, Voit E, Irvine D. Biochemical systems theory and metabolic control theory: 1. fundamental similarities and differences. Math Biosci. 1987 86(2): 127-45. doi.org/10.1016/0025-5564(87)90007-1.](https://www.sciencedirect.com/science/article/pii/0025556487900071)
 * [Savageau M. Biochemical systems analysis: a study of function and design in molecular biology. Reading, MA: Addison-Wesley; 1976.](https://www.amazon.com/Biochemical-Systems-Analysis-Function-Molecular/dp/1449590764/ref=sr_1_1?crid=1MRBJ5U79CTTH&keywords=Biochemical+systems+analysis&qid=1690469004&sprefix=biochemical+systems+analysis%2Caps%2C69&sr=8-1)
 
-Finally, `BSTModelKit.jl` a research code, expect there will be (many) bugs, breaking changes (often), etc. 
+Finally, `BSTModelKit.jl` is a research code, expect there will be (many) bugs, breaking changes (often), etc. 
 
 ## Installation and Requirements
 `BSTModelKit.jl` can be installed, updated, or removed using the [Julia package management system](https://docs.julialang.org/en/v1/stdlib/Pkg/). To access the package management interface, open the [Julia REPL](https://docs.julialang.org/en/v1/stdlib/REPL/), and start the package mode by pressing `]`.
