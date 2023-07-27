@@ -1,3 +1,7 @@
+"""
+morris(performance::Function, L::Array{Float64,1}, U::Array{Float64,1}; 
+    number_of_samples::Int64 = 1000) -> Array{Float64,2}
+"""
 function morris(performance::Function, L::Array{Float64,1}, U::Array{Float64,1}; 
     number_of_samples::Int64 = 1000)::Array{Float64,2}
 
@@ -20,7 +24,11 @@ function morris(performance::Function, L::Array{Float64,1}, U::Array{Float64,1};
     return results_array;
 end
 
-function  sobol(performance::Function, L::Array{Float64,1}, U::Array{Float64,1}; 
+"""
+    sobol(performance::Function, L::Array{Float64,1}, U::Array{Float64,1}; 
+        number_of_samples::Int64 = 1000, orders::Array{Int64,1} = [0, 1, 2])
+"""
+function sobol(performance::Function, L::Array{Float64,1}, U::Array{Float64,1}; 
     number_of_samples::Int64 = 1000, orders::Array{Int64,1} = [0, 1, 2])
 
     # initialize -

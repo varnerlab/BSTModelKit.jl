@@ -69,6 +69,11 @@ end
 ## ===== PRIVATE METHODS ABOVE HERE ============================================================= ##
 
 ## ===== PUBLIC METHODS BELOW HERE ============================================================== ##
+
+"""
+    evaluate(model::BSTModel; tspan::Tuple{Float64,Float64} = (0.0,20.0), Δt::Float64 = 0.01, 
+        input::Union{Nothing,Function} = nothing) -> Tuple{Array{Float64,1}, Array{Float64,2}}
+"""
 function evaluate(model::BSTModel; tspan::Tuple{Float64,Float64} = (0.0,20.0), Δt::Float64 = 0.01, 
     input::Union{Nothing,Function} = nothing)::Tuple{Array{Float64,1}, Array{Float64,2}}
 
@@ -88,8 +93,12 @@ function evaluate(model::BSTModel; tspan::Tuple{Float64,Float64} = (0.0,20.0), �
     end
 end
 
-function steadystate(model::BSTModel; 
-    tspan::Tuple{Float64,Float64} = (0.0,20.0), Δt::Float64 = 0.01, input::Union{Nothing,Function} = nothing)
+"""
+steadystate(model::BSTModel; 
+    tspan::Tuple{Float64,Float64} = (0.0,20.0), Δt::Float64 = 0.01, input::Union{Nothing,Function} = nothing) -> Array{Float64,1}
+"""
+function steadystate(model::BSTModel; tspan::Tuple{Float64,Float64} = (0.0,20.0), Δt::Float64 = 0.01, 
+    input::Union{Nothing,Function} = nothing)::Array{Float64,1}
     
     try
         # convert the model object to the internal_model_dictionary -
