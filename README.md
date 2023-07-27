@@ -6,12 +6,14 @@ $$
 \frac{dX_{i}}{dt} = \alpha_{i}\prod_{j\in\mathcal{P}}X_{j}^{g_{ij}} - \beta_{i}\prod_{j\in\mathcal{R}}X_{j}^{h_{ij}}\qquad{i=1,\dots,n}
 $$
 
-where $X_{i}$ is the concentration of the species $i$, the values $\alpha_{i}$ and $\beta_{i}$ are kinetic parameters (rate constants), $\mathcal{P}$ is the set of species that produce $X_{i}$, $\mathcal{R}$ is the set of species that consume $X_{i}$, and $g_{ij}$ and $h_{ij}$ are the kinetic order coefficients relating species $i$ and $j$. The S-system representation of the BST was developed by [Savageau, Voit, and coworkers](https://en.wikipedia.org/wiki/Michael_Antonio_Savageau). For a nice introduction to the S-system representation of the BST, see:
+where $X_{i}$ is the concentration of the species $i$, the values $\alpha_{i}$ and $\beta_{i}$ are kinetic parameters (rate constants), $\mathcal{P}$ is the set of species that produce $X_{i}$, $\mathcal{R}$ is the set of species that consume $X_{i}$, and $g_{ij}$ and $h_{ij}$ are the kinetic order coefficients relating species $i$ and $j$. 
+
+The S-system representation of the BST was developed by [Savageau, Voit, and coworkers](https://en.wikipedia.org/wiki/Michael_Antonio_Savageau). For a nice introduction to the S-system representation of BST, see:
 
 * [Savageau M, Voit E, Irvine D. Biochemical systems theory and metabolic control theory: 1. fundamental similarities and differences. Math Biosci. 1987 86(2): 127-45. doi.org/10.1016/0025-5564(87)90007-1.](https://www.sciencedirect.com/science/article/pii/0025556487900071)
 * [Savageau M. Biochemical systems analysis: a study of function and design in molecular biology. Reading, MA: Addison-Wesley; 1976.](https://www.amazon.com/Biochemical-Systems-Analysis-Function-Molecular/dp/1449590764/ref=sr_1_1?crid=1MRBJ5U79CTTH&keywords=Biochemical+systems+analysis&qid=1690469004&sprefix=biochemical+systems+analysis%2Caps%2C69&sr=8-1)
 
-This is a research code, there will be (many) bugs, breaking changes (often), etc. 
+Finally, this is a research code, expect there will be (many) bugs, breaking changes (often), etc. 
 
 ## Installation and Requirements
 `BSTModelKit.jl` can be installed, updated, or removed using the [Julia package management system](https://docs.julialang.org/en/v1/stdlib/Pkg/). To access the package management interface, open the [Julia REPL](https://docs.julialang.org/en/v1/stdlib/REPL/), and start the package mode by pressing `]`.
