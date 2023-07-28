@@ -8,7 +8,7 @@ $$
 
 where $X_{i}$ is the concentration of the species $i$, the values $\alpha_{i}$ and $\beta_{i}$ are kinetic parameters (rate constants), $\mathcal{P}$ is the set of species that produce $X_{i}$, $\mathcal{R}$ is the set of species that consume $X_{i}$, and $g_{ij}$ and $h_{ij}$ are the kinetic order coefficients relating species $i$ and $j$. 
 
-The S-system BST representation was developed by [Savageau, Voit, and coworkers](https://en.wikipedia.org/wiki/Michael_Antonio_Savageau). For a nice introduction to the S-system representation of BST, see:
+The S-system BST representation was developed by [Savageau, Voit, and coworkers](https://en.wikipedia.org/wiki/Michael_Antonio_Savageau). For a nice introduction to the S-system representation, see:
 
 * [Savageau M, Voit E, Irvine D. Biochemical systems theory and metabolic control theory: 1. fundamental similarities and differences. Math Biosci. 1987 86(2): 127-45. doi.org/10.1016/0025-5564(87)90007-1.](https://www.sciencedirect.com/science/article/pii/0025556487900071)
 * [Savageau M. Biochemical systems analysis: a study of function and design in molecular biology. Reading, MA: Addison-Wesley; 1976.](https://www.amazon.com/Biochemical-Systems-Analysis-Function-Molecular/dp/1449590764/ref=sr_1_1?crid=1MRBJ5U79CTTH&keywords=Biochemical+systems+analysis&qid=1690469004&sprefix=biochemical+systems+analysis%2Caps%2C69&sr=8-1)
