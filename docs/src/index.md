@@ -32,13 +32,13 @@ julia> using BSTModelKit
 
 ## Functions
 ```@docs
-BSTModelKit.sobol::Tuple{Function, Vector{Float64}, Vector{Float64}}
-Base.indexin::Tuple{Dict{String, Any}, String}
-BSTModelKit.steadystate::Tuple{BSTModel}
-BSTModelKit.evaluate::Tuple{BSTModel}
+BSTModelKit.sobol
+Base.indexin
+BSTModelKit.steadystate
+BSTModelKit.evaluate
 BSTModelKit.BSTModel
-BSTModelKit.build::Tuple{String}
-BSTModelKit.morris::Tuple{Function, Vector{Float64}, Vector{Float64}}
+BSTModelKit.build
+BSTModelKit.morris
 ```
 
 ## Funding
