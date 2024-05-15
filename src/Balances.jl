@@ -29,6 +29,6 @@ function _balances(dx, x, p, t)
 end
 
 
-function _callback(t::Float64, x::Array{Float64,1}, p::Array{Any,1})::Array{Float64,1}
+function _callback(t::Float64, x::Array{Float64,1}, p::Tuple)::Array{Float64,1}
     return zeros(length(x));
 end

@@ -5,7 +5,7 @@ using BSTModelKit
 function test_build_bst_model_object()::Bool
 
     # set path to bst file -
-    path_to_model_file = joinpath(pwd(),"data","Feedback.bst");
+    path_to_model_file = joinpath(pwd(),"data", "Feedback.bst");
 
     # build -
     model_object = build(path_to_model_file);

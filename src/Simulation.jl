@@ -6,14 +6,22 @@ function _evaluate(model::Dict{String,Any};
     # get stuff from model -
     xₒ = model["initial_condition_array"]
 
-    # build parameter vector -
-    p = Array{Any,1}(undef,6)
-    p[1] = model["α"]
-    p[2] = model["G"]
-    p[3] = model["S"]
-    p[4] = model["number_of_dynamic_states"]
-    p[5] = model["static_factors_array"]
-    p[6] = input;
+    # This is stuf going to the solver. 
+    # Converting to a tuple to pass to the solver.
+    p  = (
+        model["α"],
+        model["G"],
+        model["S"],
+        model["number_of_dynamic_states"],
+        model["static_factors_array"],
+        input
+    );
+    # p[1] = model["α"]
+    # p[2] = model["G"]
+    # p[3] = model["S"]
+    # p[4] = model["number_of_dynamic_states"]
+    # p[5] = model["static_factors_array"]
+    # p[6] = input;
 
     # setup the solver -
     prob = ODEProblem(_balances, xₒ, tspan, p; saveat = Δt)
@@ -45,14 +53,21 @@ function _evaluate_steady_state(model::Dict{String,Any};
     # get stuff from model -
     xₒ = model["initial_condition_array"]
 
-    # build parameter vector -
-    p = Array{Any,1}(undef,6)
-    p[1] = model["α"]
-    p[2] = model["G"]
-    p[3] = model["S"]
-    p[4] = model["number_of_dynamic_states"]
-    p[5] = model["static_factors_array"]
-    p[6] = input;
+    # build parameter tuple -
+    p = (
+        model["α"],
+        model["G"],
+        model["S"],
+        model["number_of_dynamic_states"],
+        model["static_factors_array"],
+        input
+    );
+    # p[1] = model["α"]
+    # p[2] = model["G"]
+    # p[3] = model["S"]
+    # p[4] = model["number_of_dynamic_states"]
+    # p[5] = model["static_factors_array"]
+    # p[6] = input;
 
     # setup the solver -
     odeprob = ODEProblem(_balances, xₒ, tspan, p; saveat = Δt)
@@ -73,6 +88,20 @@ end
 """
     evaluate(model::BSTModel; tspan::Tuple{Float64,Float64} = (0.0,20.0), Δt::Float64 = 0.01, 
         input::Union{Nothing,Function} = nothing) -> Tuple{Array{Float64,1}, Array{Float64,2}}
+
+This function is used to evaluate the model object that has been built using the `build` function. 
+The `evaluate` function will return a tuple with two elements: a vector of time points and a matrix of state values.
+
+### Arguments
+- `model::BSTModel`: A model object that has been built using the `build` function.
+- `tspan::Tuple{Float64,Float64}`: A tuple that defines the time span for the simulation. The default is `(0.0,20.0)`.
+- `Δt::Float64`: The time step for the simulation. The default is `0.01`.
+- `input::Union{Nothing,Function}`: An optional input function that can be used to drive the simulation. The default is `nothing`.
+
+### Returns
+- A tuple with two elements:
+    - `Array{Float64,1}`: A vector of time points.
+    - `Array{Float64,2}`: A matrix of state values.
 """
 function evaluate(model::BSTModel; tspan::Tuple{Float64,Float64} = (0.0,20.0), Δt::Float64 = 0.01, 
     input::Union{Nothing,Function} = nothing)::Tuple{Array{Float64,1}, Array{Float64,2}}
@@ -94,8 +123,18 @@ function evaluate(model::BSTModel; tspan::Tuple{Float64,Float64} = (0.0,20.0), �
 end
 
 """
-steadystate(model::BSTModel; 
-    tspan::Tuple{Float64,Float64} = (0.0,20.0), Δt::Float64 = 0.01, input::Union{Nothing,Function} = nothing) -> Array{Float64,1}
+    steadystate(model::BSTModel; tspan::Tuple{Float64,Float64} = (0.0,20.0), Δt::Float64 = 0.01, input::Union{Nothing,Function} = nothing) -> Array{Float64,1}
+
+The `steadystate` function is used to evaluate the steady state of the model object that has been built using the `build` function.
+
+### Arguments
+- `model::BSTModel`: A model object that has been built using the `build` function.
+- `tspan::Tuple{Float64,Float64}`: A tuple that defines the time span for the simulation. The default is `(0.0,20.0)`.
+- `Δt::Float64`: The time step for the simulation. The default is `0.01`.
+- `input::Union{Nothing,Function}`: An optional input function that can be used to drive the simulation. The default is `nothing`.
+
+### Returns
+- A vector of state values that represent the steady state of the system.
 """
 function steadystate(model::BSTModel; tspan::Tuple{Float64,Float64} = (0.0,20.0), Δt::Float64 = 0.01, 
     input::Union{Nothing,Function} = nothing)::Array{Float64,1}

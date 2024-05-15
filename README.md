@@ -19,7 +19,7 @@ Finally, `BSTModelKit.jl` is a research code, expect there will be (many) bugs, 
 `BSTModelKit.jl` can be installed, updated, or removed using the [Julia package management system](https://docs.julialang.org/en/v1/stdlib/Pkg/). To access the package management interface, open the [Julia REPL](https://docs.julialang.org/en/v1/stdlib/REPL/), and start the package mode by pressing `]`.
 While in package mode, to install `BSTModelKit.jl`, issue the command:
 
-    (@v1.9.x) pkg> add BSTModelKit
+    (@v1.1.x) pkg> add BSTModelKit
 
 To use `BSTModelKit.jl` in your projects, issue the command:
 
