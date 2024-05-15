@@ -9,7 +9,7 @@ makedocs(
     sitename = "BSTModelKit",
     format = Documenter.HTML(; prettyurls = get(ENV, "CI", nothing) == "true"),
     modules = [BSTModelKit],
-    pages = Any[
+    pages = [
         "Home" => "index.md",
         "Functions" => "functions.md",
     ]
