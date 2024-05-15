@@ -31,7 +31,7 @@ julia> using BSTModelKit
 ```
 
 ## Functions
-Fuck you - the fucking Documenter package never fucking works!!!!!!!!!!
+Fuck you - the fucking Documenter package never fucking works!!!!!!!!!! This will fail because Documenter is a fucking peice of shit
 
 ## Funding
 The work described here was supported by the following grants: 
