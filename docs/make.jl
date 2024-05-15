@@ -2,13 +2,16 @@ using Documenter
 using DocumenterTools
 using BSTModelKit
 
+push!(LOAD_PATH,"../src/")
+
+
 makedocs(
     sitename = "BSTModelKit",
     format = Documenter.HTML(; prettyurls = get(ENV, "CI", nothing) == "true"),
     modules = [BSTModelKit],
-    pages = [
-        index.md,
-        functions.md,
+    pages = Any[
+        "Home" => "index.md",
+        "Functions" => "functions.md",
     ]
 )
 
