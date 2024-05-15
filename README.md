@@ -1,5 +1,8 @@
 
 ## Introduction
+
+[![](https://img.shields.io/badge/docs-stable-blue.svg)](https://varnerlab.github.io/BSTModelKit.jl/dev/)
+
 `BSTModelKit.jl` is a package for constructing, solving, and analyzing Biochemical Systems Theory (BST) models of biochemical networks written in the [Julia](https://julialang.org) programming language. In particular, `BSTModelKit.jl` provides a set of tools for constructing and solving S-system BST representations of the form:
 
 $$
@@ -26,7 +29,7 @@ To use `BSTModelKit.jl` in your projects, issue the command:
     julia> using BSTModelKit
 
 ## Documentation
-Documentation for the `BSTModelKit.jl` package can be found [here](https://varnerlab.github.io/BSTModelKitDocumentation/landing.html).
+Documentation for the `BSTModelKit.jl` package can be found [here](https://varnerlab.github.io/BSTModelKit.jl/dev/).
 
 ### Funding
 The work described here was supported by the following grants: 

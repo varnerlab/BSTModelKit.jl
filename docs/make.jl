@@ -4,8 +4,12 @@ using BSTModelKit
 
 makedocs(
     sitename = "BSTModelKit",
-    format = Documenter.HTML(),
-    modules = [BSTModelKit]
+    format = Documenter.HTML(; prettyurls = get(ENV, "CI", nothing) == "true"),
+    modules = [BSTModelKit],
+    pages = [
+        index.md,
+        functions.md,
+    ]
 )
 
 deploydocs(

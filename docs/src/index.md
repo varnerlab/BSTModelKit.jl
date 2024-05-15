@@ -30,17 +30,6 @@ To use `BSTModelKit.jl` in your projects, issue the command:
 julia> using BSTModelKit
 ```
 
-## Functions
-```@docs
-BSTModelKit.sobol
-Base.indexin
-BSTModelKit.steadystate
-BSTModelKit.evaluate
-BSTModelKit.BSTModel
-BSTModelKit.build
-BSTModelKit.morris
-```
-
 ## Funding
 The work described here was supported by the following grants: 
 * The Interaction of Basal Risk, Pharmacological Ovulation Induction, Pregnancy and Delivery on Hemostatic Balance  NIH NHLBI R-33 HL 141787 (PI’s [Bernstein](https://www.uvmhealth.org/medcenter/provider/ira-m-bernstein-md) , [Orfeo](https://www.med.uvm.edu/biochemistry/lab_orfeo_research)) and 
