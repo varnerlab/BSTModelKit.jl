@@ -14,4 +14,5 @@ module BSTModelKit
     export sobol
     export steadystate
 
+    export func
 end # module BSTModelKit

@@ -9,7 +9,7 @@ makedocs(
 )
 
 deploydocs(
-    repo = "github.com/varnerlab/BSTModelKit.jl.git", branch = "gh-pages", target = "build", deploy_config = auto_detect_deploy_system()
+    repo = "github.com/varnerlab/BSTModelKit.jl.git", branch = "gh-pages", target = "build"
 )
 
 # Documenter can also automatically deploy documentation to gh-pages.
