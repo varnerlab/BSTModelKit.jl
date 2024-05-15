@@ -31,7 +31,15 @@ julia> using BSTModelKit
 ```
 
 ## Functions
-Fuck you - the fucking Documenter package never fucking works!!!!!!!!!! This will fail because Documenter is a fucking peice of shit
+```@docs
+BSTModelKit.sobol::Tuple{Function, Vector{Float64}, Vector{Float64}}
+Base.indexin::Tuple{Dict{String, Any}, String}
+BSTModelKit.steadystate::Tuple{BSTModel}
+BSTModelKit.evaluate::Tuple{BSTModel}
+BSTModelKit.BSTModel
+BSTModelKit.build::Tuple{String}
+BSTModelKit.morris::Tuple{Function, Vector{Float64}, Vector{Float64}}
+```
 
 ## Funding
 The work described here was supported by the following grants: 
