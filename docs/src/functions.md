@@ -12,7 +12,7 @@ Models can be constructed from a variety of file formats in combination with the
 BSTModelKit.build
 ```
 
-Once a model is constructed, it can be saved to a file or loaded from a file using the `savemodel` and `loadmodel` functions:
+Once a model instance is constructed, it can be saved to a file or loaded from a file using the `savemodel` and `loadmodel` functions:
 ```@docs
 BSTModelKit.loadmodel
 BSTModelKit.savemodel
