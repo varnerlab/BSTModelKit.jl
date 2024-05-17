@@ -8,11 +8,10 @@ module BSTModelKit
 
     # export methods -> these methods will be visible to the public -
     export build
-    export save
+    export savemodel, loadmodel
     export evaluate
     export morris
     export sobol
     export steadystate
 
-    export func
 end # module BSTModelKit

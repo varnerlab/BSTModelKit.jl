@@ -568,6 +568,19 @@ function build(path::String)::BSTModel
     end
 end
 
+"""
+    save(path::String, model::BSTModel) -> Bool
+
+This function is used to save a `BSTModel` object to a file. The file can be in one of the following formats: JLD2. 
+The function will save the model object to the file specified by the `path` argument.
+
+### Arguments
+- `path::String`: The path to the file where the model object will be saved.
+- `model::BSTModel`: The model object that will be saved to the file.
+
+### Returns
+- A boolean value that indicates if the model object was saved successfully.
+"""
 function save(path::String, model::T)::Bool where T <: AbstractBSTModel
 
     # check: path needs to end in jld2 -

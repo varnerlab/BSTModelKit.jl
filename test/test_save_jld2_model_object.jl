@@ -12,5 +12,5 @@ function test_save_jld2_model_object()::Bool
     model_object = build(path_to_toml_model_file);
 
     # save -
-    return save(path_to_jld2_model_file, model_object);
+    return savemodel(path_to_jld2_model_file, model_object);
 end
