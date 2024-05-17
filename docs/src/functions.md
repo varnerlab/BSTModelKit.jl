@@ -15,6 +15,7 @@ BSTModelKit.build
 Once a model instance is constructed, it can be saved to a file or loaded from a file using the `savemodel` and `loadmodel` functions:
 ```@docs
 BSTModelKit.loadmodel
+BSTModelKit.savemodel
 ```
 
 ## Solving
