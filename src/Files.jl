@@ -1,5 +1,5 @@
 """
-    save(path::String, model::BSTModel) -> Bool
+    savemodel(path::String, model::BSTModel) -> Bool
 
 This function is used to save a `BSTModel` object to a file. The file can be in one of the following formats: JLD2. 
 The function will save the model object to the file specified by the `path` argument.
@@ -50,7 +50,7 @@ end
 
 
 """
-    load(path::String) -> AbstractBSRModel
+    loadmodel(path::String) -> AbstractBSTModel
 
 This function is used to load a `BSTModel` object from a file. The file can be in one of the following formats: JLD2.
 The function will load the model object from the file specified by the `path` argument.
@@ -61,7 +61,7 @@ The function will load the model object from the file specified by the `path` ar
 ### Returns
 - A `BSTModel` object that was loaded from the file.
 """
-function loadmodel(path::String)::AbstractBSRModel
+function loadmodel(path::String)::AbstractBSTModel
 
     # check: path needs to end in jld2 -
     approved_file_extenstions_set = Set{String}();
