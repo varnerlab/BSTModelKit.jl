@@ -94,7 +94,7 @@ To quantify the influence of model parameters on system behavior, \texttt{BSTMod
 \section{Software Design}\label{sec:software}
 \texttt{BSTModelKit.jl} is organized around a central \texttt{BSTModel} type that encapsulates all data required to simulate and analyze a BST model, including the lists of dynamic and static species, the stoichiometric matrix $\mathbf{S}$, the kinetic order matrix $\mathbf{G}$, the rate constant vector $\boldsymbol{\alpha}$, initial conditions, and static factor values. The model object is mutable, allowing users to adjust parameters, initial conditions, and matrix entries after construction without rebuilding the model from file.
 
-The package exposes a small public API centered on six functions. The \texttt{build} function constructs a \texttt{BSTModel} from a file, supporting TOML, BST, and JLD2 formats. The \texttt{evaluate} function simulates the dynamic trajectory by integrating the ODE system (\Cref{eq:matrix}) over a user-specified time span, returning vectors of time points and state values. The \texttt{steadystate} function computes the steady-state solution of the system (\Cref{eq:steadystate}). The \texttt{savemodel} and \texttt{loadmodel} functions serialize and deserialize model objects to JLD2 binary files, enabling reproducible workflows. Finally, the \texttt{morris} and \texttt{sobol} functions perform global sensitivity analysis given a user-defined scalar performance function and parameter bounds.
+The package exposes a small public API centered on six functions; complete documentation including usage examples and function signatures is available at \url{https://varnerlab.org/BSTModelKit.jl/dev/}. The \texttt{build} function constructs a \texttt{BSTModel} from a file, supporting TOML, BST, and JLD2 formats. The \texttt{evaluate} function simulates the dynamic trajectory by integrating the ODE system (\Cref{eq:matrix}) over a user-specified time span, returning vectors of time points and state values. The \texttt{steadystate} function computes the steady-state solution of the system (\Cref{eq:steadystate}). The \texttt{savemodel} and \texttt{loadmodel} functions serialize and deserialize model objects to JLD2 binary files, enabling reproducible workflows. Finally, the \texttt{morris} and \texttt{sobol} functions perform global sensitivity analysis given a user-defined scalar performance function and parameter bounds.
 
 Models are specified in declarative text files that define the species, network connectivity, kinetic dependencies, and stoichiometric coefficients. The recommended format is TOML, which is human-readable and well-supported by Julia's standard library. A TOML model file contains a \texttt{[metadata]} section with author and version information, and a \texttt{[model]} section that lists the dynamic and static species, the reaction connection records (specifying reactants and products for each reaction), the kinetic records (specifying which species appear in the rate law for each reaction), and optional stoichiometric coefficient overrides. An example TOML model file for a linear pathway with feedback inhibition is shown in \Cref{lst:toml}. The package also supports a custom BST text format that uses section markers (e.g., \texttt{\#dynamic::start}/\texttt{\#dynamic::end}) and line comments prefixed with \texttt{//}.
 
@@ -123,6 +123,28 @@ list_of_kinetics_records = [
     "r4::{X4}", "r5::{X3}"
 ]
 \end{lstlisting}
+
+\Cref{tab:api} summarizes the public API.
+
+\begin{table}[ht]
+    \centering
+    \caption{Public API of \texttt{BSTModelKit.jl}. All functions operate on or produce \texttt{BSTModel} instances.}
+    \label{tab:api}
+    \small
+    \begin{tabular}{lll}
+        \toprule
+        \textbf{Function} & \textbf{Returns} & \textbf{Description} \\
+        \midrule
+        \texttt{build(path)} & \texttt{BSTModel} & Construct model from TOML, BST, or JLD2 file \\
+        \texttt{evaluate(model; ...)} & $(T, X)$ & Simulate dynamic trajectory via ODE integration \\
+        \texttt{steadystate(model; ...)} & $\mathbf{x}_{ss}$ & Compute steady-state concentrations \\
+        \texttt{morris(f, L, U; ...)} & $(\hat{\mu}, \hat{\sigma}^2)$ & Morris elementary-effects screening \\
+        \texttt{sobol(f, L, U; ...)} & \texttt{SobolResult} & Sobol variance-based sensitivity indices \\
+        \texttt{savemodel(path, model)} & --- & Serialize model to JLD2 binary file \\
+        \texttt{loadmodel(path)} & \texttt{BSTModel} & Deserialize model from JLD2 binary file \\
+        \bottomrule
+    \end{tabular}
+\end{table}
 
 \texttt{BSTModelKit.jl} builds on several packages from the Julia ecosystem. Dynamic simulation and steady-state computation are handled by \texttt{OrdinaryDiffEq.jl} and \texttt{SteadyStateDiffEq.jl} \citep{Rackauckas2017}, which provide adaptive-step explicit and implicit ODE solvers. Global sensitivity analysis is performed through \texttt{GlobalSensitivity.jl} \citep{Dixit2022}, with quasi-random sampling provided by \texttt{QuasiMonteCarlo.jl}. Model serialization uses \texttt{JLD2.jl}, a Julia-native binary format that preserves type information across save and load cycles.
 
@@ -268,15 +290,25 @@ We found that the two methods yielded consistent conclusions, identifying the so
 \section{Discussion}\label{sec:discussion}
 We have presented \texttt{BSTModelKit.jl}, an open-source Julia package that provides a complete workflow for Biochemical Systems Theory modeling: declarative model specification in TOML or custom text formats, automated construction of the stoichiometric and kinetic order matrices, dynamic simulation via ODE integration, steady-state computation, and global sensitivity analysis using the Morris and Sobol methods. The package leverages the Julia scientific computing ecosystem---particularly \texttt{OrdinaryDiffEq.jl}, \texttt{SteadyStateDiffEq.jl} \citep{Rackauckas2017}, and \texttt{GlobalSensitivity.jl} \citep{Dixit2022}---to provide efficient and numerically robust solvers while maintaining a small, focused API. The three examples presented in \Cref{sec:examples} illustrate the range of analyses that can be performed: dynamic simulation of feedback-regulated pathways under time-varying inputs, systematic exploration of how enzyme levels at metabolic branch points control steady-state flux distribution, and identification of the most influential parameters through global sensitivity analysis.
 
+It is worth noting what \texttt{BSTModelKit.jl} deliberately does not attempt. The package is not a general-purpose systems biology platform: it does not provide a graphical user interface, SBML import/export, or stochastic simulation. It does not perform parameter estimation, model selection, or Bayesian inference. These are mature capabilities available in tools such as COPASI \citep{Hoops2006} and the broader Julia SciML ecosystem. Instead, \texttt{BSTModelKit.jl} occupies a focused niche---programmatic construction, simulation, and sensitivity analysis of S-system models---and is designed to be composed with other Julia packages rather than to replace them.
+
 Several limitations of the current implementation suggest directions for future development. First, \texttt{BSTModelKit.jl} currently supports only the S-system representation; extending the package to support the Generalized Mass Action (GMA) formalism would enable modeling of systems where aggregation of production and consumption terms into single power-law expressions is not appropriate, such as networks with multiple independent production pathways for a single species. Second, the package does not currently provide local sensitivity analysis; integration with Julia's automatic differentiation ecosystem (e.g., \texttt{ForwardDiff.jl}) would enable efficient computation of sensitivity coefficients and logarithmic gains, quantities that are central to the classical BST analysis framework \citep{Savageau1976,Voit2000}. Third, parameter estimation from experimental data is not yet supported; combining the power-law model structure with gradient-based optimization or Bayesian inference methods available in the Julia ecosystem would make it possible to calibrate BST models directly from time-series measurements. Finally, integration with \texttt{ModelingToolkit.jl} could enable symbolic simplification, automatic Jacobian generation, and compilation of optimized model code, further improving performance for large-scale systems. We anticipate that these extensions, together with the growing Julia ecosystem for scientific computing, will make \texttt{BSTModelKit.jl} a useful tool for researchers applying BST to problems in systems biology and metabolic engineering.
 
 % ============================================================================ %
 \section*{Acknowledgments}
-This work was supported by NIH NHLBI R-33 HL 141787 and NIH NHLBI R01 HL 71944.
+This work was supported by the National Institutes of Health (NIH) National Heart, Lung, and Blood Institute (NHLBI) under grants R33 HL141787 (The Interaction of Basal Risk, Pharmacological Ovulation Induction, Pregnancy and Delivery on Hemostatic Balance; PIs I.\ Bernstein and T.\ Orfeo) and R01 HL71944 (The Pregnancy Phenotype and Predisposition to Preeclampsia; PI I.\ Bernstein).
 
 % ============================================================================ %
 \section*{Data and Code Availability}
-\texttt{BSTModelKit.jl} is freely available under the MIT license at \url{https://github.com/varnerlab/BSTModelKit.jl}. Documentation is available at \url{https://varnerlab.github.io/BSTModelKit.jl/dev/}.
+\texttt{BSTModelKit.jl} is freely available under the MIT license at \url{https://github.com/varnerlab/BSTModelKit.jl}. The package can be installed from the Julia REPL by entering package mode (\texttt{]} key) and running:
+\begin{lstlisting}[language={},numbers=none,backgroundcolor=\color{codebg}]
+add BSTModelKit
+\end{lstlisting}
+\noindent Alternatively, the development version can be installed directly from GitHub:
+\begin{lstlisting}[language={},numbers=none,backgroundcolor=\color{codebg}]
+add https://github.com/varnerlab/BSTModelKit.jl.git
+\end{lstlisting}
+\noindent Documentation is available at \url{https://varnerlab.org/BSTModelKit.jl/dev/}. All example code and model files used in this paper are included in the \texttt{paper/code} directory of the repository.
 
 % ============================================================================ %
 \bibliographystyle{plainnat}
