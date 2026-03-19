@@ -14,15 +14,15 @@ The function will save the model object to the file specified by the `path` argu
 function savemodel(path::String, model::T)::Bool where T <: AbstractBSTModel
 
     # check: path needs to end in jld2 -
-    approved_file_extenstions_set = Set{String}();
-    push!(approved_file_extenstions_set,".jld2");
+    approved_file_extensions_set = Set{String}();
+    push!(approved_file_extensions_set,".jld2");
     
     try
 
         # get the file extension -
         extension = splitext(path)[2]; # the extension is the last element -
-        if (in(extension, approved_file_extenstions_set) == false)
-            throw(ArgumentError("File extension: $(extension) is not recognized. For approaved file types, see documentation."))
+        if (in(extension, approved_file_extensions_set) == false)
+            throw(ArgumentError("File extension: $(extension) is not recognized. For approved file types, see documentation."))
         end
 
         # build an internal model dictionary -
@@ -64,15 +64,15 @@ The function will load the model object from the file specified by the `path` ar
 function loadmodel(path::String)::AbstractBSTModel
 
     # check: path needs to end in jld2 -
-    approved_file_extenstions_set = Set{String}();
-    push!(approved_file_extenstions_set,".jld2");
+    approved_file_extensions_set = Set{String}();
+    push!(approved_file_extensions_set,".jld2");
     
     try
 
         # get the file extension -
         extension = splitext(path)[2]; # the extension is the last element -
-        if (in(extension, approved_file_extenstions_set) == false)
-            throw(ArgumentError("File extension: $(extension) is not recognized. For approaved file types, see documentation."))
+        if (in(extension, approved_file_extensions_set) == false)
+            throw(ArgumentError("File extension: $(extension) is not recognized. For approved file types, see documentation."))
         end
 
         # read -

@@ -65,6 +65,6 @@ function sobol(performance::Function, L::Array{Float64,1}, U::Array{Float64,1};
     # call -
     result = gsa(performance, Sobol(order=orders), A, B)
 
-    # rerturn -
+    # return -
     return result
 end

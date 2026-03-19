@@ -1,6 +1,6 @@
 module BSTModelKit
 
-    # load the include -> this has the "using" call for all the packahes we need, and loads out *.jl files
+    # load the include -> this has the "using" call for all the packages we need, and loads our *.jl files
     include("Include.jl")
 
     # export types -> these types will be visible to the public -

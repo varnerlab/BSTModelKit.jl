@@ -52,7 +52,7 @@ function _parse_structure_section(buffer::Array{String,1})::Array{Dict{String,An
             left_phrase = rstrip.(lstrip.(String.(split(original_structure_phrase,"-->"))))[1]
             right_phrase = rstrip.(lstrip.(String.(split(original_structure_phrase,"-->"))))[2]
 
-            # now, we can have a , in the left or right record, run the spit one more time for a ,
+            # split left and right phrases around commas for multiple species -
             left_phase_species_list = split(left_phrase,",")
             right_phase_species_list = split(right_phrase,",")
 
@@ -86,7 +86,7 @@ function _parse_rate_section(buffer::Array{String,1})::Array{Dict{String,Any}}
 
     for record ∈ buffer
 
-        # slpit around ::
+        # split around ::
         record_components = String.(split(record, "::"))
 
         # process each component -
@@ -94,10 +94,10 @@ function _parse_rate_section(buffer::Array{String,1})::Array{Dict{String,Any}}
         factors = record_components[2]
 
         # factors are a set of stuff, so we need to split around the ,
-        factor_list = factors[2:end-1] # this get's rid of the {}
+        factor_list = factors[2:end-1] # this gets rid of the {}
         factor_list_components = String.(split(factor_list, ","))
 
-        # ok, let's rock ...
+        # build the dictionary for this rate record -
         tmp_dict = Dict{String,Any}()
         tmp_dict["name"] = name
         for factor ∈ factor_list_components
@@ -187,7 +187,7 @@ function _build_exponent_matrix(list_of_factors::Array{String,1},
     for (i, f) ∈ enumerate(list_of_factors)
         for (j, d) ∈ enumerate(reaction_factors)
 
-            # ok: so in this d, to we have f?
+            # does this reaction dictionary contain factor f?
             if (haskey(d, f) == true)
                 factor_matrix[i, j] = d[f]
             end
@@ -274,7 +274,7 @@ function _build_default_model_dictionary(model_buffer::Array{String,1})::Dict{St
             reaction_name = key[1]; # reaction name
             species_name = key[2]; # species name 
 
-            # look indexs -
+            # lookup indices -
             index_reaction_name = findfirst(x->x==reaction_name, tmp_rate_order_array);
             index_species_name = findfirst(x->x==species_name, list_of_dynamic_species);
 
@@ -307,7 +307,7 @@ function _build_default_model_dictionary(model_buffer::Array{String,1})::Dict{St
     model_dict["number_of_dynamic_states"] = number_of_dynamic_states
     model_dict["number_of_static_states"] = number_of_static_states
     model_dict["list_of_dynamic_species"] = list_of_dynamic_species
-    model_dict["list_of_static_fators"] = list_of_static_species
+    model_dict["list_of_static_factors"] = list_of_static_species
     model_dict["total_species_list"] = total_species_list
     model_dict["static_factors_array"] = static_factors_array
     model_dict["initial_condition_array"] = zeros(number_of_dynamic_states)
@@ -392,7 +392,7 @@ function _build_default_model_dictionary_toml(path_to_file::String)::Dict{String
                 reaction_name = key[1]; # reaction name
                 species_name = key[2]; # species name 
 
-                # look indexs -
+                # lookup indices -
                 index_reaction_name = findfirst(x->x==reaction_name, tmp_rate_order_array);
                 index_species_name = findfirst(x->x==species_name, list_of_dynamic_species);
         
@@ -427,7 +427,7 @@ function _build_default_model_dictionary_toml(path_to_file::String)::Dict{String
     model_dict["number_of_dynamic_states"] = number_of_dynamic_states
     model_dict["number_of_static_states"] = number_of_static_states
     model_dict["list_of_dynamic_species"] = list_of_dynamic_species
-    model_dict["list_of_static_fators"] = list_of_static_species
+    model_dict["list_of_static_factors"] = list_of_static_species
     model_dict["total_species_list"] = total_species_list
     model_dict["static_factors_array"] = static_factors_array
     model_dict["initial_condition_array"] = zeros(number_of_dynamic_states)
@@ -451,14 +451,14 @@ function _build(internal::Dict{String,Any})::BSTModel
     # create new BSTModel -
     model = BSTModel();
 
-    # get one chnuck of data -
+    # get the number of dynamic states -
     number_of_dynamic_states = internal["number_of_dynamic_states"];
 
     # add data to new model instance -
     model.number_of_dynamic_states = internal["number_of_dynamic_states"]
     model.number_of_static_states = internal["number_of_static_states"] 
     model.list_of_dynamic_species = internal["list_of_dynamic_species"]
-    model.list_of_static_species = internal["list_of_static_fators"] 
+    model.list_of_static_species = internal["list_of_static_factors"] 
     model.total_species_list = internal["total_species_list"]
     model.static_factors_array = internal["static_factors_array"]
     model.list_of_reactions = internal["list_of_reactions"]
@@ -491,7 +491,7 @@ function _build(model::BSTModel)::Dict{String,Any}
     internal_model_dictionary["number_of_dynamic_states"] = model.number_of_dynamic_states
     internal_model_dictionary["number_of_static_states"] = model.number_of_static_states
     internal_model_dictionary["list_of_dynamic_species"] = model.list_of_dynamic_species
-    internal_model_dictionary["list_of_static_fators"] = model.list_of_static_species
+    internal_model_dictionary["list_of_static_factors"] = model.list_of_static_species
     internal_model_dictionary["total_species_list"] = model.total_species_list
     internal_model_dictionary["static_factors_array"] = model.static_factors_array
     internal_model_dictionary["initial_condition_array"] = model.initial_condition_array
@@ -523,20 +523,20 @@ This function is used to build a `BSTModel` object from a model file. The model 
 function build(path::String)::BSTModel
 
     # what are the "approved" components -
-    approved_file_extenstions_set = Set{String}();
-    push!(approved_file_extenstions_set,".bst");
-    push!(approved_file_extenstions_set,".txt");
-    push!(approved_file_extenstions_set,".jld2");
-    push!(approved_file_extenstions_set,".dat");
-    push!(approved_file_extenstions_set,".net");
-    push!(approved_file_extenstions_set,".toml");
+    approved_file_extensions_set = Set{String}();
+    push!(approved_file_extensions_set,".bst");
+    push!(approved_file_extensions_set,".txt");
+    push!(approved_file_extensions_set,".jld2");
+    push!(approved_file_extensions_set,".dat");
+    push!(approved_file_extensions_set,".net");
+    push!(approved_file_extensions_set,".toml");
 
     try
 
         # get the file extension -
         extension = splitext(path)[2]; # the extension is the last element -
-        if (in(extension, approved_file_extenstions_set) == false)
-            throw(ArgumentError("File extension: $(extension) is not recognized. For approaved file types, see documentation."))
+        if (in(extension, approved_file_extensions_set) == false)
+            throw(ArgumentError("File extension: $(extension) is not recognized. For approved file types, see documentation."))
         end
 
         # check: if jld2 then we can just load the file, and build the model. If another type, then we need to parse the file

@@ -27,11 +27,11 @@ function test_build_run_feedback_model()::Bool
     # solve the model -
     (T,X) = evaluate(model_object);
 
-    # values?
-    if (T[end]>0.0 && X[end,end]>0)
+    # check: did the simulation produce valid results?
+    if (T[end] > 0.0 && X[end,end] > 0)
         return true
     end
 
-    # return -
-    return true
+    # default: always fail -
+    return false
 end

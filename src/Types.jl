@@ -1,4 +1,4 @@
-# Declare an anstract parent type -
+# Declare an abstract parent type -
 abstract type AbstractBSTModel end
 
 # concrete subtypes -

@@ -6,8 +6,7 @@ function _evaluate(model::Dict{String,Any};
     # get stuff from model -
     xₒ = model["initial_condition_array"]
 
-    # This is stuf going to the solver. 
-    # Converting to a tuple to pass to the solver.
+    # build the parameter tuple for the solver -
     p  = (
         model["α"],
         model["G"],
@@ -16,12 +15,6 @@ function _evaluate(model::Dict{String,Any};
         model["static_factors_array"],
         input
     );
-    # p[1] = model["α"]
-    # p[2] = model["G"]
-    # p[3] = model["S"]
-    # p[4] = model["number_of_dynamic_states"]
-    # p[5] = model["static_factors_array"]
-    # p[6] = input;
 
     # setup the solver -
     prob = ODEProblem(_balances, xₒ, tspan, p; saveat = Δt)
@@ -53,7 +46,7 @@ function _evaluate_steady_state(model::Dict{String,Any};
     # get stuff from model -
     xₒ = model["initial_condition_array"]
 
-    # build parameter tuple -
+    # build the parameter tuple for the solver -
     p = (
         model["α"],
         model["G"],
@@ -62,17 +55,11 @@ function _evaluate_steady_state(model::Dict{String,Any};
         model["static_factors_array"],
         input
     );
-    # p[1] = model["α"]
-    # p[2] = model["G"]
-    # p[3] = model["S"]
-    # p[4] = model["number_of_dynamic_states"]
-    # p[5] = model["static_factors_array"]
-    # p[6] = input;
 
     # setup the solver -
-    odeprob = ODEProblem(_balances, xₒ, tspan, p; saveat = Δt)
+    odeprob = ODEProblem(_balances, xₒ, tspan, p)
     ssprob = SteadyStateProblem(odeprob)
-    soln = solve(ssprob, DynamicSS(Rosenbrock23(autodiff=false)), dt=1.0)
+    soln = solve(ssprob, DynamicSS(Tsit5()); dt=Δt)
 
     # get the results from the solver -
     sssoln = soln.u
