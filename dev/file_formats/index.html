@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>File Formats · BSTModelKit</title><meta name="title" content="File Formats · BSTModelKit"/><meta property="og:title" content="File Formats · BSTModelKit"/><meta property="twitter:title" content="File Formats · BSTModelKit"/><meta name="description" content="Documentation for BSTModelKit."/><meta property="og:description" content="Documentation for BSTModelKit."/><meta property="twitter:description" content="Documentation for BSTModelKit."/><script data-outdated-warner src="../assets/warner.js"></script><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.050/juliamono.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.8/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL=".."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../assets/documenter.js"></script><script src="../search_index.js"></script><script src="../siteinfo.js"></script><script src="../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/catppuccin-mocha.css" data-theme-name="catppuccin-mocha"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/catppuccin-macchiato.css" data-theme-name="catppuccin-macchiato"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/catppuccin-frappe.css" data-theme-name="catppuccin-frappe"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/catppuccin-latte.css" data-theme-name="catppuccin-latte"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><div class="docs-package-name"><span class="docs-autofit"><a href="../">BSTModelKit</a></span></div><button class="docs-search-query input is-rounded is-small is-clickable my-2 mx-auto py-1 px-2" id="documenter-search-query">Search docs (Ctrl + /)</button><ul class="docs-menu"><li><a class="tocitem" href="../">Home</a></li><li class="is-active"><a class="tocitem" href>File Formats</a><ul class="internal"><li><a class="tocitem" href="#TOML-Format-(recommended)"><span>TOML Format (recommended)</span></a></li><li><a class="tocitem" href="#BST-Format"><span>BST Format</span></a></li><li><a class="tocitem" href="#JLD2-Format"><span>JLD2 Format</span></a></li></ul></li><li><a class="tocitem" href="../examples/">Examples</a></li><li><a class="tocitem" href="../functions/">API Reference</a></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><a class="docs-sidebar-button docs-navbar-link fa-solid fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a><nav class="breadcrumb"><ul class="is-hidden-mobile"><li class="is-active"><a href>File Formats</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>File Formats</a></li></ul></nav><div class="docs-right"><a class="docs-navbar-link" href="https://github.com/varnerlab/BSTModelKit.jl" title="View the repository on GitHub"><span class="docs-icon fa-brands"></span><span class="docs-label is-hidden-touch">GitHub</span></a><a class="docs-navbar-link" href="https://github.com/varnerlab/BSTModelKit.jl/blob/main/docs/src/file_formats.md" title="Edit source on GitHub"><span class="docs-icon fa-solid"></span></a><a class="docs-settings-button docs-navbar-link fa-solid fa-gear" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-article-toggle-button fa-solid fa-chevron-up" id="documenter-article-toggle-button" href="javascript:;" title="Collapse all docstrings"></a></div></header><article class="content" id="documenter-page"><h1 id="File-Formats"><a class="docs-heading-anchor" href="#File-Formats">File Formats</a><a id="File-Formats-1"></a><a class="docs-heading-anchor-permalink" href="#File-Formats" title="Permalink"></a></h1><p><code>BSTModelKit.jl</code> supports several file formats for defining BST models. The <a href="../functions/#BSTModelKit.build"><code>build</code></a> function automatically detects the format based on the file extension.</p><h2 id="TOML-Format-(recommended)"><a class="docs-heading-anchor" href="#TOML-Format-(recommended)">TOML Format (recommended)</a><a id="TOML-Format-(recommended)-1"></a><a class="docs-heading-anchor-permalink" href="#TOML-Format-(recommended)" title="Permalink"></a></h2><p>The TOML format (<code>.toml</code>) is the recommended way to define models. A TOML model file has two sections: <code>[metadata]</code> and <code>[model]</code>.</p><h3 id="Example:-Linear-pathway-with-feedback-inhibition"><a class="docs-heading-anchor" href="#Example:-Linear-pathway-with-feedback-inhibition">Example: Linear pathway with feedback inhibition</a><a id="Example:-Linear-pathway-with-feedback-inhibition-1"></a><a class="docs-heading-anchor-permalink" href="#Example:-Linear-pathway-with-feedback-inhibition" title="Permalink"></a></h3><pre><code class="language-toml hljs">[metadata]
+author = &quot;jdv27@cornell.edu&quot;
+date = &quot;12/17/22&quot;
+version = &quot;0.1&quot;
+description = &quot;Linear pathway with feedback inhibition&quot;
+
+[model]
+list_of_static_species = [&quot;E1&quot;, &quot;E2&quot;, &quot;E3&quot;]
+list_of_dynamic_species = [&quot;X1&quot;, &quot;X2&quot;, &quot;X3&quot;, &quot;X4&quot;, &quot;X5&quot;]
+
+list_of_connection_records = [
+    # name::{reactants} --&gt; {products}
+    &quot;r1::{X1} --&gt; X2&quot;,
+    &quot;r2::{X2} --&gt; X3&quot;,
+    &quot;r3::X3 --&gt; X4&quot;,
+    &quot;r5::X3 --&gt; X5&quot;,
+
+    # source and sink reactions use empty braces {}
+    &quot;r0::{} --&gt; X1&quot;,
+    &quot;r4::X4 --&gt; {}&quot;
+]
+
+list_of_kinetics_records = [
+    # name::{factor_1,factor_2,...}
+    &quot;r0::{}&quot;,
+    &quot;r1::{X1,X4,E1}&quot;,
+    &quot;r2::{X2,E2}&quot;,
+    &quot;r3::{X3,E3}&quot;,
+    &quot;r4::{X4}&quot;,
+    &quot;r5::{X3}&quot;
+]
+
+list_of_stoichiometry_records = [
+    # name,species,coefficient
+    &quot;r1,X1,2.0&quot;
+]</code></pre><h3 id="Section-descriptions"><a class="docs-heading-anchor" href="#Section-descriptions">Section descriptions</a><a id="Section-descriptions-1"></a><a class="docs-heading-anchor-permalink" href="#Section-descriptions" title="Permalink"></a></h3><p><strong><code>[metadata]</code></strong> — optional metadata about the model:</p><ul><li><code>author</code>: Author of the model</li><li><code>date</code>: Date the model was created</li><li><code>version</code>: Model version</li><li><code>description</code>: A short description of the model</li></ul><p><strong><code>[model]</code></strong> — the model definition:</p><ul><li><code>list_of_static_species</code>: Species with constant (externally set) concentrations, e.g., enzymes</li><li><code>list_of_dynamic_species</code>: Species governed by ODEs</li><li><code>list_of_connection_records</code>: Reaction connectivity in the format <code>name::{reactants} --&gt; {products}</code>. Use empty braces <code>{}</code> for source or sink reactions</li><li><code>list_of_kinetics_records</code>: Kinetic dependencies in the format <code>name::{factor_1,factor_2,...}</code>. Lists which species appear in the rate law for each reaction</li><li><code>list_of_stoichiometry_records</code>: Override default stoichiometric coefficients (default is <span>$\pm 1$</span>). Format: <code>name,species,coefficient</code></li></ul><h2 id="BST-Format"><a class="docs-heading-anchor" href="#BST-Format">BST Format</a><a id="BST-Format-1"></a><a class="docs-heading-anchor-permalink" href="#BST-Format" title="Permalink"></a></h2><p>The BST format (<code>.bst</code>) is a custom text format using section markers. Comments are prefixed with <code>//</code>.</p><h3 id="Example"><a class="docs-heading-anchor" href="#Example">Example</a><a id="Example-1"></a><a class="docs-heading-anchor-permalink" href="#Example" title="Permalink"></a></h3><pre><code class="nohighlight hljs">// Linear pathway with feedback inhibition
+
+#static::start
+    E1,E2,E3
+#static::end
+
+#dynamic::start
+    X1, X2, X3, X4, X5
+#dynamic::end
+
+#structure::start
+    r1::{X1} --&gt; X2
+    r2::{X2} --&gt; X3
+    r3::X3 --&gt; X4
+    r5::X3 --&gt; X5
+    r0::{} --&gt; X1
+    r4::X4 --&gt; {}
+#structure::end
+
+#rate::start
+    r0::{}
+    r1::{X1,X4,E1}
+    r2::{X2,E2}
+    r3::{X3,E3}
+    r4::{X4}
+    r5::{X3}
+#rate::end
+
+#stoichiometry::start
+    r1,X1,2.0
+#stoichiometry::end</code></pre><h3 id="Sections"><a class="docs-heading-anchor" href="#Sections">Sections</a><a id="Sections-1"></a><a class="docs-heading-anchor-permalink" href="#Sections" title="Permalink"></a></h3><ul><li><code>#static</code> — comma-separated list of static species</li><li><code>#dynamic</code> — comma-separated list of dynamic species</li><li><code>#structure</code> — reaction connectivity (same syntax as TOML <code>list_of_connection_records</code>)</li><li><code>#rate</code> — kinetic dependencies (same syntax as TOML <code>list_of_kinetics_records</code>)</li><li><code>#stoichiometry</code> — stoichiometric coefficient overrides</li></ul><h2 id="JLD2-Format"><a class="docs-heading-anchor" href="#JLD2-Format">JLD2 Format</a><a id="JLD2-Format-1"></a><a class="docs-heading-anchor-permalink" href="#JLD2-Format" title="Permalink"></a></h2><p>Models can be saved to and loaded from <a href="https://github.com/JuliaIO/JLD2.jl">JLD2</a> binary files (<code>.jld2</code>) using the <a href="../functions/#BSTModelKit.savemodel"><code>savemodel</code></a> and <a href="../functions/#BSTModelKit.loadmodel"><code>loadmodel</code></a> functions. This is useful for serializing a fully configured model (with parameters, initial conditions, etc.) for later use.</p><pre><code class="language-julia hljs"># save a configured model
+savemodel(&quot;my_model.jld2&quot;, model)
+
+# load it back
+model = loadmodel(&quot;my_model.jld2&quot;)
+
+# or equivalently
+model = build(&quot;my_model.jld2&quot;)</code></pre></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../">« Home</a><a class="docs-footer-nextpage" href="../examples/">Examples »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="auto">Automatic (OS)</option><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="catppuccin-latte">catppuccin-latte</option><option value="catppuccin-frappe">catppuccin-frappe</option><option value="catppuccin-macchiato">catppuccin-macchiato</option><option value="catppuccin-mocha">catppuccin-mocha</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.17.0 on <span class="colophon-date" title="Thursday 19 March 2026 11:09">Thursday 19 March 2026</span>. Using Julia version 1.12.5.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
