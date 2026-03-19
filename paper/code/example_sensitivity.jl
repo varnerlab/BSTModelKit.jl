@@ -54,8 +54,8 @@ morris_result = morris(F, L, U; number_of_samples=500);
 sobol_result = sobol(F, L, U; number_of_samples=1000);
 S1 = sobol_result.S1;
 ST = sobol_result.ST;
-S1_CI = sobol_result.S1_Conf;
-ST_CI = sobol_result.ST_Conf;
+S1_CI = sobol_result.S1_Conf_Int;
+ST_CI = sobol_result.ST_Conf_Int;
 
 # --- Plot ---
 default(
@@ -77,21 +77,24 @@ _defaults = (;
     legendfontsize=8,
 )
 
-# panel A: Morris μ* vs σ bar chart (easier to read than scatter with overlapping labels)
+# panel A: Morris μ* with σ error bars
 p1 = bar(param_names, μ_star;
+    yerror=σ_morris,
     ylabel="Mean |EE| (AU)",
     color=:steelblue, legend=false,
     title="Morris screening",
     xrotation=45,
     _defaults...)
 
-# panel B: Sobol first-order and total-order indices
+# panel B: Sobol first-order and total-order indices with confidence intervals
 x_pos = collect(1:NP);
 bar_width = 0.35;
 p2 = bar(x_pos .- bar_width/2, S1;
+    yerror=S1_CI,
     bar_width=bar_width, label="S1 (first-order)",
     color=:steelblue, _defaults...)
 bar!(p2, x_pos .+ bar_width/2, ST;
+    yerror=ST_CI,
     bar_width=bar_width, label="ST (total-order)",
     color=:coral,
     xlabel="", ylabel="Sensitivity index",

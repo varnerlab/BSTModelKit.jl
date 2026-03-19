@@ -16,6 +16,8 @@
 \usetikzlibrary{arrows.meta, positioning, calc}
 \crefname{lstlisting}{Listing}{Listings}
 \Crefname{lstlisting}{Listing}{Listings}
+\crefname{equation}{Eqn.}{Eqns.}
+\Crefname{equation}{Eqn.}{Eqns.}
 
 % --- code listing style ---
 \definecolor{codebg}{RGB}{245,245,245}
@@ -37,6 +39,7 @@
 % --- metadata ---
 \title{\texttt{BSTModelKit.jl}: A Julia Package for Constructing, Solving, and Analyzing Biochemical Systems Theory Models}
 \author{
+    Sandra Vadhin\thanks{\href{mailto:sv442@cornell.edu}{sv442@cornell.edu}}\hspace{2pt} and
     Jeffrey D. Varner\thanks{Corresponding author: \href{mailto:jdv27@cornell.edu}{jdv27@cornell.edu}} \\
     \textit{Robert Frederick Smith School of Chemical and Biomolecular Engineering} \\
     \textit{Cornell University, Ithaca, NY 14853, USA}
@@ -83,7 +86,7 @@ At steady state, the time derivatives vanish, giving the algebraic condition:
 \begin{equation}\label{eq:steadystate}
     \mathbf{0} = \mathbf{S} \cdot \mathbf{r}(\mathbf{x}_{ss}, \mathbf{x}_s) + \mathbf{u}
 \end{equation}
-\texttt{BSTModelKit.jl} computes steady-state solutions using the \texttt{DynamicSS} algorithm from \texttt{SteadyStateDiffEq.jl}, which integrates the ODE system forward in time until the derivatives are sufficiently small. This approach is robust for systems where direct algebraic solution of \Cref{eq:steadystate} is intractable, as is typical for power-law systems with many interacting species.
+\texttt{BSTModelKit.jl} computes steady-state solutions using the \texttt{DynamicSS} algorithm from \texttt{Steady\-State\-Diff\-Eq.jl}, which integrates the ODE system forward in time until the derivatives are sufficiently small. This approach is robust for systems where direct algebraic solution of \Cref{eq:steadystate} is intractable, as is typical for power-law systems with many interacting species.
 
 To quantify the influence of model parameters on system behavior, \texttt{BSTModelKit.jl} provides wrappers for two global sensitivity analysis methods from \texttt{GlobalSensitivity.jl} \citep{Dixit2022}. The Morris method \citep{Morris1991} computes elementary effects by perturbing one parameter at a time along randomized trajectories through the parameter space. For each parameter $\theta_k$, the method estimates the mean $\hat{\mu}_k$ and variance $\hat{\sigma}_k^2$ of the elementary effects; parameters with large $|\hat{\mu}_k|$ have significant influence on the output, while large $\hat{\sigma}_k^2$ indicates nonlinear effects or interactions. The Morris method is computationally inexpensive and is well-suited for screening large parameter spaces to identify the most influential parameters. The Sobol method \citep{Sobol2001} provides a more detailed variance-based decomposition, partitioning the total output variance into contributions from individual parameters (first-order indices $S_i$) and parameter interactions (total-order indices $S_{T_i}$). While more computationally demanding, the Sobol method yields a complete picture of parameter importance and interaction structure.
 
@@ -128,9 +131,9 @@ list_of_kinetics_records = [
 We demonstrate the capabilities of \texttt{BSTModelKit.jl} with three examples of increasing complexity: dynamic simulation of a feedback-inhibited linear pathway, steady-state analysis of a branched pathway under varying enzyme levels, and global sensitivity analysis using the Morris and Sobol methods. All examples use the TOML model specification format and are available in the package repository.
 
 \subsection{Dynamic simulation of a feedback-inhibited pathway}\label{sec:ex-dynamic}
-We consider a five-species linear pathway in which a precursor $X_1$ is converted through intermediates $X_2$ and $X_3$ to a product $X_4$, with a branch producing a byproduct $X_5$ from $X_3$. Three static enzymes $E_1$, $E_2$, and $E_3$ catalyze reactions $r_1$, $r_2$, and $r_3$, respectively. Product $X_4$ exerts feedback inhibition on $r_1$ by appearing in its rate law with a negative kinetic order ($g_{X_4,r_1} = -0.5$), so that as $X_4$ accumulates, the flux from $X_1$ to $X_2$ is progressively suppressed. The model is specified in the TOML format shown in \Cref{lst:toml}, with static factor values $E_1 = E_2 = E_3 = 1.0$, rate constants $\boldsymbol{\alpha} = (10, 10, 10, 0.1, 0, 3)$ for reactions $(r_1, r_2, r_3, r_5, r_0, r_4)$, and initial conditions near zero for all species.
+We considered a five-species linear pathway in which a precursor $X_1$ was converted through intermediates $X_2$ and $X_3$ to a product $X_4$, with a branch producing a byproduct $X_5$ from $X_3$. Three static enzymes $E_1$, $E_2$, and $E_3$ catalyzed reactions $r_1$, $r_2$, and $r_3$, respectively. Product $X_4$ exerted feedback inhibition on $r_1$ by appearing in its rate law with a negative kinetic order ($g_{X_4,r_1} = -0.5$), so that as $X_4$ accumulated, the flux from $X_1$ to $X_2$ was progressively suppressed. The model was specified in the TOML format shown in \Cref{lst:toml}, with static factor values $E_1 = E_2 = E_3 = 1.0$, rate constants $\boldsymbol{\alpha} = (10, 10, 10, 0.1, 0, 3)$ for reactions $(r_1, r_2, r_3, r_5, r_0, r_4)$, and initial conditions near zero for all species. Rather than using a constant source rate, we drove the production of $X_1$ through a time-varying external input function $u_1(t)$ that applied two square pulses of different amplitude: a high pulse ($u_1 = 10$) from $t = 5$ to $t = 15$, followed by a return to baseline ($u_1 = 1$), and then a medium pulse ($u_1 = 5$) from $t = 25$ to $t = 35$. This input protocol exercised the feedback mechanism under two different loading conditions.
 
-Rather than using a constant source rate, we drive the production of $X_1$ through a time-varying external input function $u_1(t)$ that applies two square pulses of different amplitude: a high pulse ($u_1 = 10$) from $t = 5$ to $t = 15$, followed by a return to baseline ($u_1 = 1$), and then a medium pulse ($u_1 = 5$) from $t = 25$ to $t = 35$. This input protocol exercises the feedback mechanism under two different loading conditions. \Cref{fig:feedback} shows the input profile (top panel) and the resulting concentration trajectories (bottom panel). During the high pulse, $X_1$ rises rapidly, the intermediates $X_2$ and $X_3$ reach approximately unit concentration, and $X_4$ accumulates to its highest level ($\approx 3.3$), which in turn suppresses $r_1$ and limits further buildup of $X_1$. During the medium pulse, the system responds proportionally---the $X_1$ and $X_4$ peaks are roughly half their previous values---demonstrating that the feedback mechanism operates across a range of input magnitudes. The byproduct $X_5$, which has no degradation pathway, accumulates monotonically and ratchets upward with each pulse, a behavior that would be important to consider in a metabolic engineering context.
+We simulated the dynamic trajectory using the \texttt{evaluate} function and observed that the feedback loop attenuated the response to both pulses (\Cref{fig:feedback}). During the high pulse, $X_1$ rose rapidly, the intermediates $X_2$ and $X_3$ reached approximately unit concentration, and $X_4$ accumulated to its highest level ($\approx 3.3$), which in turn suppressed $r_1$ and limited further buildup of $X_1$. During the medium pulse, the system responded proportionally---the $X_1$ and $X_4$ peaks were roughly half their previous values---demonstrating that the feedback mechanism operated across a range of input magnitudes. The byproduct $X_5$, which had no degradation pathway, accumulated monotonically and ratcheted upward with each pulse, a behavior that would be important to consider in a metabolic engineering context.
 
 \begin{figure}[ht]
     \centering
@@ -167,14 +170,46 @@ Rather than using a constant source rate, we drive the production of $X_1$ throu
     \vspace{2mm}
 
     \includegraphics[width=0.85\textwidth]{figures/feedback_simulation.pdf}
-    \caption{Dynamic simulation of a feedback-inhibited linear pathway. Top: reaction network where solid arrows denote mass flow and the dashed red line indicates feedback inhibition of $r_1$ by $X_4$. Bottom: concentration trajectories under a pulsed input $u_1(t)$; product $X_4$ exerts feedback inhibition on $r_1$, limiting upstream accumulation during both the high and medium pulses.}
+    \caption{Dynamic simulation of a feedback-inhibited linear pathway driven by a pulsed input. Top panel: reaction network schematic showing a linear pathway from $X_1$ to $X_4$ with a branch to byproduct $X_5$; solid arrows denote mass flow catalyzed by enzymes $E_1$, $E_2$, and $E_3$, while the dashed red line indicates feedback inhibition of $r_1$ by the product $X_4$ ($g_{X_4,r_1} = -0.5$). Middle panel: the time-varying input function $u_1(t)$ applied to the production of $X_1$, consisting of a high pulse ($u_1 = 10$, $t = 5$--$15$) and a medium pulse ($u_1 = 5$, $t = 25$--$35$) separated by returns to baseline ($u_1 = 1$). Bottom panel: simulated concentration trajectories for all five species over $t \in [0, 50]$; $X_4$ accumulation during each pulse suppresses $r_1$ via feedback, limiting upstream buildup, while the byproduct $X_5$ accumulates monotonically because it lacks a degradation pathway.}
     \label{fig:feedback}
 \end{figure}
 
 \subsection{Steady-state analysis of a branched pathway}\label{sec:ex-steadystate}
-We next consider a branched pathway in which a source produces species $A$, which is converted to $B$, then to $C$, at which point the pathway branches: $C$ is converted to $D$ via reaction $r_3$ (catalyzed by enzyme $E_3$) or to $E$ via reaction $r_4$ (catalyzed by enzyme $E_4$). Both $D$ and $E$ are degraded by first-order reactions $r_5$ and $r_6$. Two feedback loops are present: $E$ inhibits $r_1$ ($g_{E,r_1} = -0.5$) and $D$ inhibits $r_2$ ($g_{D,r_2} = -0.5$). This network topology is common in amino acid and nucleotide biosynthesis, where branch point enzymes control the distribution of flux between competing product pathways.
+We next considered a branched pathway in which a source produced species $A$, which was converted to $B$, then to $C$, at which point the pathway branched: $C$ was converted to $D$ via reaction $r_3$ (catalyzed by enzyme $E_3$) or to $E$ via reaction $r_4$ (catalyzed by enzyme $E_4$). Both $D$ and $E$ were degraded by first-order reactions $r_5$ and $r_6$. Two feedback loops were present: $E$ inhibited $r_1$ ($g_{E,r_1} = -0.5$) and $D$ inhibited $r_2$ ($g_{D,r_2} = -0.5$). This network topology is common in amino acid and nucleotide biosynthesis, where branch point enzymes control the distribution of flux between competing product pathways. The TOML specification for this network is shown in \Cref{lst:toml-branched}; the branch at $C$ is expressed naturally as two separate connection records (\texttt{r3::C --> D} and \texttt{r4::C --> E}), and the feedback dependencies appear in the kinetics records for $r_1$ and $r_2$. To illustrate how enzyme levels at the branch point controlled metabolic flux distribution, we swept the concentration of $E_3$ from 0.1 to 5.0 while holding $E_4 = 1.0$ fixed and computed the steady-state concentrations using the \texttt{steadystate} function.
 
-To illustrate how enzyme levels at the branch point control metabolic flux distribution, we sweep the concentration of $E_3$ from 0.1 to 5.0 while holding $E_4 = 1.0$ fixed and compute the steady-state concentrations using the \texttt{steadystate} function. \Cref{fig:steadystate} shows the result. At low $E_3$, reaction $r_3$ is slow relative to $r_4$, so most flux is directed toward $E$; the steady-state concentration of $E$ exceeds 1.8 while $D$ is below 0.2. As $E_3$ increases, the flux redistributes: the $D$ and $E$ curves cross near $E_3 \approx 1$, and at high $E_3$ the situation reverses, with $D$ reaching approximately 1.7 and $E$ dropping below 0.4. The branch point metabolite $C$ decreases monotonically with increasing $E_3$, as it is consumed more rapidly. The upstream species $A$ and $B$ also adjust through the feedback loops, decreasing as the changing $D$ and $E$ levels modulate $r_1$ and $r_2$. This example demonstrates how \texttt{BSTModelKit.jl} can be used to explore the relationship between enzyme levels and steady-state flux distribution, a central concern in metabolic engineering.
+\begin{lstlisting}[caption={TOML model file for a branched pathway with dual feedback inhibition.},label={lst:toml-branched},language={},float=ht]
+[metadata]
+author = "jdv27@cornell.edu"
+date = "12/17/22"
+version = "0.1"
+description = "Branched pathway with feedback"
+
+[model]
+list_of_static_species = ["E1", "E2", "E3", "E4"]
+list_of_dynamic_species = ["A", "B", "C", "D", "E"]
+
+list_of_connection_records = [
+    "r1::A --> B",
+    "r2::B --> C",
+    "r3::C --> D",
+    "r4::C --> E",
+    "r0::{} --> A",
+    "r5::D --> {}",
+    "r6::E --> {}"
+]
+
+list_of_kinetics_records = [
+    "r0::{}",
+    "r1::{A,E,E1}",
+    "r2::{B,D,E2}",
+    "r3::{C,E3}",
+    "r4::{C,E4}",
+    "r5::{D}",
+    "r6::{E}"
+]
+\end{lstlisting}
+
+We found that increasing $E_3$ systematically redirected flux from the $E$ branch to the $D$ branch (\Cref{fig:steadystate}). At low $E_3$, reaction $r_3$ was slow relative to $r_4$, so most flux was directed toward $E$; the steady-state concentration of $E$ exceeded 1.8 while $D$ was below 0.2. As $E_3$ increased, the flux redistributed: the $D$ and $E$ curves crossed near $E_3 \approx 1$, and at high $E_3$ the situation reversed, with $D$ reaching approximately 1.7 and $E$ dropping below 0.4. The branch point metabolite $C$ decreased monotonically with increasing $E_3$, as it was consumed more rapidly. The upstream species $A$ and $B$ also adjusted through the feedback loops, decreasing as the changing $D$ and $E$ levels modulated $r_1$ and $r_2$. This example demonstrated how \texttt{BSTModelKit.jl} could be used to explore the relationship between enzyme levels and steady-state flux distribution, a central concern in metabolic engineering.
 
 \begin{figure}[ht]
     \centering
@@ -213,19 +248,19 @@ To illustrate how enzyme levels at the branch point control metabolic flux distr
     \vspace{2mm}
 
     \includegraphics[width=0.85\textwidth]{figures/steady_state_sweep.pdf}
-    \caption{Steady-state analysis of a branched pathway with feedback inhibition. Top: reaction network where $C$ is converted to $D$ (via $r_3$, catalyzed by $E_3$) or $E$ (via $r_4$, catalyzed by $E_4$); dashed red lines indicate feedback inhibition of $r_1$ by $E$ and $r_2$ by $D$. Bottom: steady-state concentrations as a function of the enzyme level $E_3$. Increasing $E_3$ redirects flux from the $E$ branch to the $D$ branch; the two curves cross near $E_3 \approx 1$.}
+    \caption{Steady-state analysis of a branched pathway under varying enzyme levels. Top panel: reaction network schematic showing a linear pathway from source to $C$, where the pathway branches to $D$ (via $r_3$, catalyzed by $E_3$) and $E$ (via $r_4$, catalyzed by $E_4$); both $D$ and $E$ are degraded by first-order reactions $r_5$ and $r_6$, respectively; dashed red lines indicate feedback inhibition of $r_1$ by $E$ ($g_{E,r_1} = -0.5$) and $r_2$ by $D$ ($g_{D,r_2} = -0.5$). Bottom panel: steady-state concentrations of all five species as a function of the enzyme level $E_3$ (swept from 0.1 to 5.0, with $E_4 = 1.0$ held fixed), computed using the \texttt{steadystate} function. At low $E_3$, flux is directed predominantly toward $E$; as $E_3$ increases, the $D$ and $E$ curves cross near $E_3 \approx 1$ and the flux redistributes to favor the $D$ branch. The upstream species $A$ and $B$ decrease at high $E_3$ due to modulation by the feedback loops.}
     \label{fig:steadystate}
 \end{figure}
 
 \subsection{Global sensitivity analysis}\label{sec:ex-sensitivity}
-Finally, we demonstrate the global sensitivity analysis capabilities of \texttt{BSTModelKit.jl} by identifying which parameters most influence the time-integrated concentration of $X_4$ in the feedback-inhibited pathway from \Cref{sec:ex-dynamic}. The seven parameters varied are the six rate constants $\alpha_{r_1}, \ldots, \alpha_{r_4}$ (with bounds at $\pm 50\%$ of their nominal values) and the feedback kinetic order $g_{X_4,r_1}$ (varied from $-2$ to $0$). The scalar performance metric is $J = \int_0^{20} X_4(t)\,dt$, representing the cumulative exposure to the product.
+Finally, we performed a global sensitivity analysis to identify which parameters most influenced the time-integrated concentration of $X_4$ in the feedback-inhibited pathway from \Cref{sec:ex-dynamic}. The seven parameters varied were the six rate constants $\alpha_{r_1}, \ldots, \alpha_{r_4}$ (with bounds at $\pm 50\%$ of their nominal values) and the feedback kinetic order $g_{X_4,r_1}$ (varied from $-2$ to $0$). The scalar performance metric was $J = \int_0^{20} X_4(t)\,dt$, representing the cumulative exposure to the product. We applied both the Morris screening method (500 trajectories) and the Sobol variance decomposition (1000 quasi-random samples).
 
-\Cref{fig:sensitivity} shows the results of both the Morris screening method (left panel, 500 trajectories) and the Sobol variance decomposition (right panel, 1000 quasi-random samples). The two methods yield consistent conclusions. The Morris elementary effects identify $\alpha_{r_0}$ (source rate) and $\alpha_{r_4}$ (product degradation rate) as the dominant parameters, with $\alpha_{r_5}$ (branch rate) a distant third; the upstream reaction rate constants and the feedback kinetic order have negligible influence. The Sobol analysis confirms this ranking: $\alpha_{r_4}$ has the largest first-order index ($S_1 \approx 0.54$) and total-order index ($S_T \approx 0.59$), followed by $\alpha_{r_0}$ ($S_1 \approx 0.38$, $S_T \approx 0.45$). The gap between $S_1$ and $S_T$ for both parameters indicates mild interactions, consistent with the multiplicative structure of the power-law kinetics. These results are intuitive: the integrated $X_4$ concentration is controlled primarily by how fast $X_4$ is produced (governed by the source feeding the pathway) and how fast it is removed (governed by $r_4$), while the intermediate conversion steps operate fast enough that their rate constants do not limit the overall accumulation.
+We found that the two methods yielded consistent conclusions, identifying the source and degradation rates as the dominant parameters (\Cref{fig:sensitivity}). The Morris elementary effects identified $\alpha_{r_0}$ (source rate) and $\alpha_{r_4}$ (product degradation rate) as the most influential parameters, with $\alpha_{r_5}$ (branch rate) a distant third; the upstream reaction rate constants and the feedback kinetic order had negligible influence. The Sobol analysis confirmed this ranking: $\alpha_{r_4}$ had the largest first-order index ($S_1 \approx 0.54$) and total-order index ($S_T \approx 0.59$), followed by $\alpha_{r_0}$ ($S_1 \approx 0.38$, $S_T \approx 0.45$). The gap between $S_1$ and $S_T$ for both parameters indicated mild interactions, consistent with the multiplicative structure of the power-law kinetics. These results are intuitive: the integrated $X_4$ concentration was controlled primarily by how fast $X_4$ was produced (governed by the source feeding the pathway) and how fast it was removed (governed by $r_4$), while the intermediate conversion steps operated fast enough that their rate constants did not limit the overall accumulation.
 
 \begin{figure}[ht]
     \centering
     \includegraphics[width=\textwidth]{figures/sensitivity_analysis.pdf}
-    \caption{Global sensitivity analysis of the integrated $X_4$ concentration for the feedback-inhibited pathway shown in \Cref{fig:feedback}. Left: Morris screening identifies $\alpha_{r_0}$ and $\alpha_{r_4}$ as the most influential parameters based on mean absolute elementary effects. Right: Sobol variance decomposition confirms the ranking, with first-order indices ($S_1$) and total-order indices ($S_T$) shown for each parameter.}
+    \caption{Global sensitivity analysis of the time-integrated $X_4$ concentration ($J = \int_0^{20} X_4\,dt$) for the feedback-inhibited pathway shown in \Cref{fig:feedback}. Seven parameters were varied: six rate constants ($\alpha_{r_1}, \alpha_{r_2}, \alpha_{r_3}, \alpha_{r_5}, \alpha_{r_0}, \alpha_{r_4}$; bounds at $\pm 50\%$ of nominal) and the feedback kinetic order $g_{X_4,r_1}$ (varied from $-2$ to $0$). Left panel: Morris screening (500 trajectories) showing mean absolute elementary effects ($\mu^{*}$) with standard deviation error bars for each parameter; $\alpha_{r_0}$ and $\alpha_{r_4}$ dominate. Right panel: Sobol variance decomposition (1000 quasi-random samples) showing first-order ($S_1$) and total-order ($S_T$) sensitivity indices with confidence intervals; $\alpha_{r_4}$ ($S_1 \approx 0.54$, $S_T \approx 0.59$) and $\alpha_{r_0}$ ($S_1 \approx 0.38$, $S_T \approx 0.45$) account for the majority of output variance, while the gap between $S_1$ and $S_T$ indicates mild parameter interactions.}
     \label{fig:sensitivity}
 \end{figure}
 
